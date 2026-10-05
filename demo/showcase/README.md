@@ -2,9 +2,11 @@
 
 [Watch or download Lens-demo.mp4](Lens-demo.mp4) · **92 seconds · 1920×1080 · 60 fps · H.264/AAC**.
 
-The [repository README](../../README.md#demo) links this approved cut through a clickable
-poster and a direct MP4 link. The file is tracked in the repository so judges can also
-play it after cloning. Its SHA-256 is:
+The [repository README](../../README.md#demo) embeds this approved cut through a
+[GitHub video attachment](https://github.com/user-attachments/assets/97a7b9f9-82fa-47b8-a80c-9e6cda1d9b5f). The upload is preserved in
+[closed media issue #2](https://github.com/James-Begin/LensPFN/issues/2), so it is publicly
+available without a login. A direct MP4 download remains in the README, and the same
+file is tracked in this folder for playback after cloning. Its SHA-256 is:
 
 ```text
 eb0342f7b52d958b890e5f01dc1cff0ab403c783543ed8aea73ee677665ca165

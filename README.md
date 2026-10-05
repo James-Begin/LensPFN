@@ -15,7 +15,7 @@ Lens learns which research papers interest you, then helps you find the next one
 
 ## Demo
 
-[![Watch the Lens showcase: citation previews, personal matches, and next reads](demo/showcase/Lens-demo-poster.png)](https://github.com/James-Begin/LensPFN/raw/refs/heads/main/demo/showcase/Lens-demo.mp4)
+https://github.com/user-attachments/assets/97a7b9f9-82fa-47b8-a80c-9e6cda1d9b5f
 
 **[Watch or download the full MP4](https://github.com/James-Begin/LensPFN/raw/refs/heads/main/demo/showcase/Lens-demo.mp4)** · 1:32 · 1080p · 60 fps · original instrumental music
 
