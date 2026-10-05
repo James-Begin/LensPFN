@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lens · A reading companion for arXiv</title><link rel="stylesheet" href="panel.css"><script type="module" src="panel.js"></script></head>
+<body>
+<main class="panel">
+  <header class="masthead"><a class="wordmark" href="panel.html" aria-label="Lens home"><span data-icon="lens"></span>Lens<span class="wordmark-detail">for arXiv</span></a><button id="settings-button" class="icon-button" aria-label="Connection and preferences" title="Connection and preferences"><span data-icon="settings"></span></button></header>
+  <div class="connection-line"><span id="connection-dot" class="dot"></span><span id="connection-label">Connecting to your companion…</span><span class="local-label">On your Mac</span></div>
+  <p id="preview-note" class="preview-note" hidden>Live panel preview · Install the extension to bring Lens onto arXiv.</p>
+  <section id="onboarding" class="onboarding" hidden aria-label="Set up Lens">
+    <ol class="setup-progress" aria-label="Setup progress"><li data-step="0" class="active" aria-current="step">Connect</li><li data-step="1">Interests</li><li data-step="2">Matches</li><li data-step="3">Read</li></ol>
+    <div data-setup-step="0" class="setup-frame">
+      <div class="setup-lens" aria-hidden="true"><span data-icon="lens"></span></div>
+      <h1 tabindex="-1">Your next paper<br>starts here.</h1>
+      <p class="setup-description">A shortlist that learns what interests you. Useful references, right where you read. Let’s make Lens yours.</p>
+      <form id="setup-connect-form">
+        <p id="setup-connected" class="setup-success" hidden><span data-icon="check"></span>Your local companion is already connected.</p>
+        <div id="setup-pair-fields"><h2>Connect your companion</h2><p class="fine">Start the local companion, then <a href="http://127.0.0.1:8765/" target="_blank" rel="noopener noreferrer">open its page</a> and copy the pairing key from preferences.</p><details class="setup-command"><summary>How to start the companion</summary><p>From the Lens project folder:</p><code>.venv/bin/python -m lens.feed.bridge</code></details><label for="setup-pair-key">Companion pairing key</label><input id="setup-pair-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your local pairing key"><p class="fine">This connects the extension to Lens on this computer.</p></div>
+        <button id="setup-connect-submit" type="submit" class="primary">Connect Lens</button>
+      </form>
+    </div>
+    <div data-setup-step="1" class="setup-frame" hidden>
+      <h1 tabindex="-1">What catches<br>your interest?</h1><p class="setup-description">A few research topics give your shortlist a starting point. Your paper ratings will refine it as you read.</p>
+      <form id="setup-topics-form"><label for="setup-topics">Your reading interests</label><textarea id="setup-topics" rows="5" maxlength="2000" placeholder="For example: foundation models for tabular data, retrieval, small-data learning"></textarea><p class="fine">Use broad areas or specific questions. You can change these anytime.</p><button class="primary" type="submit">Use these interests <span data-icon="arrow"></span></button></form><button id="setup-skip-topics" class="setup-skip" type="button">Skip for now</button>
+    </div>
+    <div data-setup-step="2" class="setup-frame" hidden>
+      <h1 tabindex="-1">Add a personal<br>match estimate.</h1><p class="setup-description">TabPFN learns from your ratings to estimate which papers you’ll find interesting.</p>
+      <form id="setup-access-form"><p id="setup-access-ready" class="setup-success" hidden><span data-icon="check"></span>TabPFN access is already configured.</p><div id="setup-access-fields"><label for="setup-tabpfn-token">TabPFN access token</label><input id="setup-tabpfn-token" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your Prior Labs access token"><p class="fine">Get a token from your <a href="https://ux.priorlabs.ai/account" target="_blank" rel="noopener noreferrer">Prior Labs account</a> and accept the model license there. Lens verifies the token with Prior Labs and stores it only in the companion’s local token cache.</p></div><button id="setup-access-submit" type="submit" class="primary">Save access token</button></form><button id="setup-skip-access" class="setup-skip" type="button">Start with similarity ranking</button>
+    </div>
+    <div data-setup-step="3" class="setup-frame" hidden>
+      <div class="setup-lens setup-lens-ready" aria-hidden="true"><span data-icon="check"></span></div><h1 tabindex="-1">Ready for<br>your next read.</h1><p class="setup-description" id="setup-ready-summary"></p><p id="setup-ready-model" class="fine"></p>
+      <ul class="setup-reading"><li>Mark papers <strong>Interested</strong> or <strong>Not for me</strong> to teach Lens your taste.</li><li>Hover citations in arXiv HTML to preview papers and their match scores.</li><li>Once scoring finishes, explore the top references suggested for that paper.</li></ul><button id="setup-finish" class="primary" type="button">Open my shortlist <span data-icon="arrow"></span></button>
+    </div>
+    <p id="setup-working" class="fine setup-working" role="status" hidden>Checking your details…</p><p id="setup-error" class="setup-error" role="alert" hidden></p><button id="setup-back" class="setup-back" type="button" hidden>Back</button><p class="setup-footnote">Keep the companion running while you read. Your library stays on this computer.</p>
+  </section>
+  <section id="connect" class="connect" hidden>
+    <h1>Your reading,<br>with a little direction.</h1><p>Keep reading on arXiv. Lens learns which papers catch your interest and builds a shortlist for you.</p>
+    <ol class="setup-steps"><li>Start the local Lens companion.</li><li><a href="http://127.0.0.1:8765/" target="_blank" rel="noreferrer">Open the companion</a> and copy its pairing key from settings.</li><li>Paste the key here to connect.</li></ol>
+    <form id="connect-form"><label for="pair-key">Pairing key</label><input id="pair-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your local pairing key" required><button class="primary" type="submit">Connect Lens <span data-icon="arrow"></span></button></form>
+    <p class="fine">Your ratings and models stay on this computer. The companion needs to remain running.</p>
+  </section>
+  <section id="settings" class="settings" hidden aria-labelledby="settings-title">
+    <div class="section-heading"><h2 id="settings-title">Make Lens yours</h2><button id="close-settings" class="icon-button" aria-label="Close preferences"><span data-icon="close"></span></button></div>
+    <form id="interests-form"><label for="interests">What are you exploring?</label><textarea id="interests" rows="3" maxlength="2000" placeholder="For example: tabular foundation models, retrieval, small-data learning"></textarea><p class="fine">A few topics give your shortlist a starting point. Ratings make it more personal.</p><button class="primary" type="submit">Save interests</button></form>
+    <div id="pairing-controls" hidden><h3>Connect the extension</h3><p class="fine">Copy this computer’s pairing key, then paste it into the extension. Keep this key private.</p><button id="copy-key" class="secondary">Copy pairing key</button></div>
+    <button id="restart-setup" type="button" class="secondary">Open guided setup</button><p class="fine">Lens is an independent project, not affiliated with arXiv.</p>
+  </section>
+  <div id="workspace" hidden>
+    <section id="current-paper" class="current-paper" hidden aria-labelledby="current-label"><div class="section-heading"><h2 id="current-label">On this page</h2><span data-icon="book"></span></div><h3 id="current-title"></h3><div id="current-actions" class="rating-actions"></div></section>
+    <section id="cited-paper" class="cited-paper" hidden aria-labelledby="cited-label"><div class="section-heading"><h2 id="cited-label">From the citation you highlighted</h2><span data-icon="book"></span></div><p id="cited-marker" class="cited-marker"></p><p id="cited-match" class="cited-match" hidden></p><h3 id="cited-title"></h3><p id="cited-authors" class="cited-authors" hidden></p><p id="cited-reference" class="cited-reference"></p><details id="cited-abstract" hidden><summary>Read abstract</summary><p id="cited-abstract-text"></p></details><div class="cited-actions"><a id="cited-link" class="secondary" target="_blank" rel="noopener noreferrer" hidden>Open paper</a><button id="cited-save" class="secondary" type="button" hidden>Save as Interested</button></div><p id="cited-help" class="fine" hidden></p></section>
+    <nav class="tabs" aria-label="Your papers"><button id="shortlist-tab" class="tab active" aria-current="page">Shortlist</button><button id="library-tab" class="tab">Your library <span id="library-count">0</span></button></nav>
+    <section class="feed-heading"><div><h1 id="feed-title">A place to start.</h1><p id="feed-description">Recent papers, ready for your first impressions.</p></div></section>
+    <div class="feed-tools" id="feed-tools"><label class="subject-control" for="category">Subject<select id="category"><option value="">All subjects</option></select></label><button id="refresh" class="icon-button" aria-label="Fetch recent arXiv papers" title="Fetch the last 3 days from arXiv"><span data-icon="refresh"></span></button></div>
+    <section id="learning" class="learning"><div class="learning-heading"><strong id="learning-title">Teach Lens what interests you</strong><span id="learning-count"></span></div><p id="learning-description">Rate papers as you read. Your shortlist will follow your interests.</p><div class="learning-track" role="progressbar" aria-label="Ratings before match scores" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0"><span id="learning-fill"></span></div></section>
+    <p id="model-warning" class="notice" hidden></p>
+    <p id="list-update" class="update-status" role="status"></p>
+    <div id="loading" class="loading" hidden role="status"><span class="loading-line"></span><p>Finding papers for you…</p></div>
+    <section id="paper-list" aria-label="Papers"></section>
+    <div id="empty" class="empty" hidden><span data-icon="book"></span><h2 id="empty-title">A little feedback goes a long way.</h2><p id="empty-description">Mark a paper as Interested or Not for me. You’ll find it here.</p></div>
+    <footer><span id="feed-meta"></span><span>Less searching. More reading.</span></footer>
+  </div>
+  <div id="message" class="message" role="status" hidden></div>
+  <div id="error" class="error" role="alert" hidden><p id="error-text"></p><button id="retry" class="secondary">Try again</button></div>
+</main>
+</body></html>

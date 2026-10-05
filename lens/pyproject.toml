@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lens-search"
+version = "0.1.0"
+description = "Session-adaptive evidence search with TabPFN-3.5"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=2,<3",
+  "scikit-learn>=1.6,<2",
+  "rank-bm25==0.2.2",
+]
+
+[project.optional-dependencies]
+semantic = ["sentence-transformers>=6.1,<7"]
+# 9.0.0 is the first line we verified exposes ModelVersion.V3_5 (checked by `lens doctor`).
+tabpfn = ["tabpfn>=9.0.0,<10"]
+feed = ["streamlit>=1.40,<2"]
+bench = ["pyarrow>=15", "pandas>=2", "lightgbm>=4.4"]
+
+[project.scripts]
+lens = "lens.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lens"]

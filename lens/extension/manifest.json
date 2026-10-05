@@ -1,0 +1,63 @@
+{
+  "manifest_version": 3,
+  "name": "Lens \u2014 your arXiv reading companion",
+  "description": "Rate arXiv papers, follow HTML citations, and build a personal shortlist with your local Lens ranker.",
+  "version": "0.7.0",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "storage",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Open Lens",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "panel.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://arxiv.org/abs/*",
+        "https://www.arxiv.org/abs/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://arxiv.org/html/*",
+        "https://www.arxiv.org/html/*"
+      ],
+      "js": [
+        "reference-parser.js",
+        "citation-prefetch.js",
+        "citation-recommendations.js",
+        "recommendation-popup.js",
+        "citation-popup.js",
+        "citations.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}
