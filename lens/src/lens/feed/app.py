@@ -90,7 +90,7 @@ with st.sidebar:
         store.save_profile(profile, hidden)
     st.subheader("Ranking")
     engine_label = st.radio("Engine", list(ENGINES), index=0)
-    threshold = st.slider("Notify me when match ≥", 0.5, 0.99, 0.8, 0.01)
+    threshold = st.slider("Highlight when match ≥", 0.5, 0.99, 0.8, 0.01)
     compare = st.checkbox("Show similarity-baseline rank for comparison")
 
 pool, pool_name = store.latest_pool()

@@ -1,5 +1,7 @@
 # Lens for arXiv (local Chrome extension)
 
+[Main README](../../README.md) · [Demo setup](../../docs/DEMO.md) · [Getting started](../../docs/GETTING_STARTED.md)
+
 Lens places two rating buttons on arXiv abstract pages and shows a personal paper shortlist in a Chrome side panel. On arXiv HTML papers, focusing or hovering an in-text bibliography citation opens a paper preview beside it and brings its reference into the Lens side panel. When the reference contains an arXiv ID, the popup shows the verified title, authors, abstract, Interested / Not for me controls, and a TabPFN match estimate when available. It uses the existing local Lens Feed profile, E5 embeddings, and ranking code. It requires a running Python companion; the extension does not contact a hosted Lens service.
 
 ## Try the panel first
@@ -7,18 +9,18 @@ Lens places two rating buttons on arXiv abstract pages and shows a personal pape
 From the extracted `lens/` project directory:
 
 ```bash
-uv sync --locked --extra semantic --extra tabpfn --extra feed --extra bench
-.venv/bin/python -m lens.feed.bridge --device mps
+uv sync --locked --extra semantic --extra tabpfn --extra feed
+uv run --no-sync python -m lens.feed.bridge --device cpu
 ```
 
-Use `--device cpu` on a machine without Apple Silicon acceleration. Open [http://127.0.0.1:8765](http://127.0.0.1:8765) to preview the panel and copy its pairing key from the preferences button. The bridge reuses `.lens-feed/` and `.cache/`, including any batch previously fetched from Streamlit. The bridge only listens on `127.0.0.1`.
+Use `--device mps` on Apple Silicon or `--device cuda` with an available NVIDIA GPU. Open [http://127.0.0.1:8765](http://127.0.0.1:8765) to preview the panel and copy its pairing key from the preferences button. The bridge reuses `.lens-feed/` and `.cache/`, including any batch previously fetched from Streamlit. The bridge only listens on `127.0.0.1`.
 
 To inspect the cited-paper card without installing a browser extension, open [the local citation preview](http://127.0.0.1:8765/?citation=2207.01848). Its sample citation is clearly labelled; the paper metadata and save action use the same local API as the extension.
 
 ## Load the extension
 
 1. In Chrome or another Chromium browser with the side panel API, open `chrome://extensions` and turn on **Developer mode**.
-2. Choose **Load unpacked** and select the `lens/extension` directory (the directory containing `manifest.json`). If using the packaged ZIP, extract it first and select its `extension` directory.
+2. Choose **Load unpacked** and select the `lens/extension` directory (the directory containing `manifest.json`). If using the current [extension ZIP](../../demo/lens-extension.zip), extract it first and select its `extension` directory.
 3. Open an arXiv abstract page such as `https://arxiv.org/abs/2207.01848`. Two Lens rating buttons appear after the title.
 4. Open Lens from the browser toolbar or use **Open shortlist** on the paper page. The guided startup flow connects your companion, saves reading interests, and optionally configures TabPFN access. Paste the pairing key from the local companion page when prompted. The key is saved in Chrome extension storage; it is also kept in `.lens-feed/bridge-token` with local file permissions restricted to the current user.
 
@@ -47,7 +49,7 @@ The extension requests access only to arXiv abstract and HTML pages and the loop
 The extension is plain Manifest V3 JavaScript and CSS with no JavaScript build step. `content.js` adds the abstract-page controls; `citation-prefetch.js` schedules and caches background lookups; `reference-parser.js` reads bibliography markup and identifiers; `citations.js` detects linked HTML citations; `citation-popup.js` renders their isolated popup; `list-motion.js` animates reranking; `background.js` limits and relays requests to the local companion; `panel.html`, `panel.js`, and `panel.css` implement the side panel. The Python companion is `src/lens/feed/bridge.py`.
 
 ```bash
-.venv/bin/python -m unittest discover -s tests -v
+uv run --no-sync python -m unittest discover -s tests -v
 node --check extension/background.js
 node --check extension/content.js
 node --check extension/citation-prefetch.js

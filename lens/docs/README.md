@@ -1,4 +1,7 @@
-# Documentation index
+# Research documentation index
+
+For the extension and judging, start at the [main README](../../README.md),
+[demo setup](../../docs/DEMO.md), or [setup guide](../../docs/GETTING_STARTED.md).
 
 | File | Contents |
 |---|---|

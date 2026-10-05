@@ -1,10 +1,13 @@
-# 🔭 Lens Feed — a paper feed that knows how sure it is
+# Lens Feed — research and evaluation
+
+For the current extension, demo video, and installation, start at the [repository README](../README.md).
+For a ready profile, use the [demo setup](../docs/DEMO.md). This document preserves
+the research evidence and optional Streamlit workflow.
 
 **In the week we measured (2026-09-25 → 10-02), arXiv announced 11,481 new computer-science
 papers. You can read ten.**
 Lens Feed ranks each day's new arXiv papers for *you*, learns from every 👍/👎 with
-**TabPFN-3.5** (in-context, no training), and only interrupts you when it is genuinely
-confident a paper is worth your time.
+**TabPFN-3.5** (in-context, no training), and highlights papers whose match estimates exceed your selected threshold.
 
 Built for the TabPFN-3.5 hackathon. Runs locally; your ratings never leave your machine.
 
@@ -98,19 +101,19 @@ label) and paper **age is measured at rating time**. Without them, flexible mode
 ratings come from fewer than 3 days (e.g. one onboarding session), the product falls back
 to 5 contiguous rating blocks (cross-fitting).
 
-## Run it
+## Run the optional Streamlit feed
 
 Python ≥ 3.11 and [uv](https://docs.astral.sh/uv/):
 
 ```bash
-uv sync --extra semantic --extra tabpfn --extra feed
-uv run streamlit run src/lens/feed/app.py
+uv sync --locked --extra semantic --extra tabpfn --extra feed
+uv run --no-sync streamlit run src/lens/feed/app.py
 ```
 
-**Fastest path — offline demo:** open *✨ Try the demo* in the sidebar and load the
+**Bundled-data Streamlit demo:** open *✨ Try the demo* in the sidebar and load the
 **Prior Labs researcher** persona: 29 liked TabPFN-family papers (all cited in the TabPFN-3.5
 report) and 15 disliked near-misses (LLM, RL, diffusion), over a bundled week of 8,211 arXiv
-cs + stat papers (CC0 metadata). No network calls to arXiv. It starts past the 30-rating
+cs + stat papers (CC0 metadata). No arXiv harvest is needed; first-use model downloads still require network access. This loader replaces the current Streamlit profile, so use a separate `LENS_FEED_HOME` to preserve your history. It starts past the 30-rating
 point, so TabPFN match scores and *Worth reading* are on immediately.
 
 Or with your own taste: *Fetch new papers from arXiv* (sidebar) → seed liked papers by
@@ -126,11 +129,11 @@ The local [Lens for arXiv extension](extension/README.md) adds ratings to arXiv 
 ## Reproduce the benchmark
 
 ```bash
-uv sync --extra semantic --extra tabpfn --extra bench
+uv sync --locked --extra semantic --extra tabpfn --extra bench
 git clone --depth 1 https://github.com/avg-dev/scholar_inbox_datasets .cache/bench/scholar_inbox_datasets
-uv run lens bench-prepare --ratings .cache/bench/scholar_inbox_datasets/data/rated_papers.csv \
+uv run --no-sync lens bench-prepare --ratings .cache/bench/scholar_inbox_datasets/data/rated_papers.csv \
   --output artifacts/feedbench --users 240 --device cuda          # downloads ~3 GB CC0 arXiv metadata
-uv run lens bench-run --bench artifacts/feedbench --split test --device cuda \
+uv run --no-sync lens bench-run --bench artifacts/feedbench --split test --device cuda \
   --learners embsig:tabpfnfast rocchio:g0.5 emb:logistic+C0.03 --output artifacts/fbtest/run
 python scripts/feedbench_report.py artifacts/fbtest
 python scripts/feedbench_hypotheses.py artifacts/fbtest

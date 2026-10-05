@@ -1,0 +1,147 @@
+{
+  "version": 7,
+  "sourceFrames": 2898,
+  "originalSourceFrames": 3169,
+  "removedIdenticalHoldFrames": 271,
+  "sourceFps": 30,
+  "fps": 60,
+  "durationSeconds": 92.0,
+  "speedMultiplier": 1.05,
+  "dimensions": [
+    1920,
+    1080
+  ],
+  "scenes": 11,
+  "browserFillsFrame": true,
+  "allPngIntegrityChecksPassed": true,
+  "textWidthAuditIssues": 0,
+  "ratingCounter": {
+    "start": 0,
+    "end": 88,
+    "everyStepPresent": true,
+    "monotonic": true,
+    "positive": 59,
+    "negative": 29
+  },
+  "reading": {
+    "scrollMonotonic": true,
+    "startRatings": 89,
+    "endRatings": 91,
+    "sameClockAcrossThreeScenes": true,
+    "source": "https://arxiv.org/pdf/2505.20003v2",
+    "view": "PDF-styled arXiv HTML citation workflow"
+  },
+  "typingMonotonic": true,
+  "shortlistCardOverlapFrames": 0,
+  "readingTravelFrames": 157,
+  "previousReadingTravelFrames": 288,
+  "matchScores": "illustrative",
+  "soundtrack": "Open Horizons: original ambient electronic groove; no UI cues or button sounds",
+  "metadataHandoffTargetVisibleBeforeMotion": true,
+  "musicManifest": {
+    "title": "Open Horizons",
+    "original": true,
+    "style": "warm ambient electronic groove",
+    "tempoBpm": 112,
+    "sourceSeconds": 110,
+    "uiSounds": false,
+    "confirmationTones": false,
+    "clicks": false,
+    "finalPlaybackRate": 1.05,
+    "pitchPreserved": true
+  },
+  "soundtrackSha256": "ed4266fa953f1540dd4db09a6bc3403e68c943e15b62f527a9dc0c13413fde20",
+  "cutSoundtrackSha256": "41ff22b4f08e949ccbded7f9645fd43be4783445109f17d7c41eed92ee0f4d56",
+  "endingAudioFadeSeconds": 2.6,
+  "montageTiming": {
+    "accelerationFrames": 430,
+    "slowdownFrames": 100,
+    "slowdownBeginsAfterRating": 80,
+    "finalRatingFrame": 558
+  },
+  "openingRatingControlsAbsent": true,
+  "montageDistinctPapers": 88,
+  "laterRatedReferencesExcludedFromMontage": true,
+  "shortlistPaper": "1706.03762",
+  "topMatches": {
+    "initialUnrated": 2,
+    "unratedAfterSavingTabPFN": 1
+  },
+  "topPopupRemainsOpenUntilLibrary": true,
+  "redButtons": "warm outer halo, white wrapping border, pulse and brighter fill",
+  "genieLaunch": {
+    "startSourceFrame": 2877,
+    "endSourceFrame": 2901,
+    "durationFrames": 24,
+    "monotonicProgress": true,
+    "continuousAcrossOriginalSceneBoundary": 2899,
+    "origin": "Read TabPFN button"
+  },
+  "finalPaper": "2207.01848",
+  "sha256": "eb0342f7b52d958b890e5f01dc1cff0ab403c783543ed8aea73ee677665ca165",
+  "encodedVideo": {
+    "codec": "h264",
+    "framesDecoded": 5520,
+    "durationSeconds": 92.0,
+    "audioCodec": "aac"
+  },
+  "decodedAudio": {
+    "sampleRate": 44100,
+    "channels": 2,
+    "peak": 0.370269775390625,
+    "rms": 0.09084048116007272
+  },
+  "citationPreviewHoldDurationsPreserved": true,
+  "stillness": {
+    "source": {
+      "sourceFrames": 2898,
+      "playbackSourceRate": 31.5,
+      "limitSeconds": 2.5,
+      "exactLongest": {
+        "startFrame": 2827,
+        "endFrame": 2897,
+        "frames": 71,
+        "startSeconds": 89.74603174603175,
+        "endSeconds": 92.0,
+        "durationSeconds": 2.253968253968254
+      },
+      "visuallyUnchangedLongest": {
+        "startFrame": 0,
+        "endFrame": 71,
+        "frames": 72,
+        "startSeconds": 0.0,
+        "endSeconds": 2.2857142857142856,
+        "durationSeconds": 2.2857142857142856
+      },
+      "exactOverLimit": [],
+      "visuallyUnchangedOverLimit": [],
+      "method": {
+        "exact": "SHA-256 of lossless source PNGs",
+        "visual": "320x180 RGB comparison to interval anchor; \u22650.2% pixels change by \u226512/255 and mean channel difference \u22650.15/255 resets interval",
+        "tinyIndicatorsIgnored": true
+      }
+    },
+    "encoded": {
+      "movie": "Lens-animated-demo-v7.mp4",
+      "framesDecoded": 5520,
+      "fps": 60.0,
+      "limitSeconds": 2.5,
+      "longestVisuallyUnchanged": {
+        "startFrame": 5379,
+        "endFrame": 5519,
+        "startSeconds": 89.65,
+        "endSeconds": 92.0,
+        "durationSeconds": 2.35
+      },
+      "overLimit": [],
+      "method": "Every decoded video frame; anchor-based RGB comparison at 320x180; \u22650.2% pixels change by \u226512/255 with mean difference \u22650.15/255 resets hold; tiny indicators and compression noise ignored."
+    },
+    "passed": true
+  },
+  "browserPlayback": {
+    "source": "Lens-animated-demo-v7.mp4",
+    "durationSeconds": 92,
+    "readyState": 4,
+    "retimedChaptersUpdated": true
+  }
+}

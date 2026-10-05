@@ -1,0 +1,15 @@
+{
+  "movie": "Lens-animated-demo-v7.mp4",
+  "framesDecoded": 5520,
+  "fps": 60.0,
+  "limitSeconds": 2.5,
+  "longestVisuallyUnchanged": {
+    "startFrame": 5379,
+    "endFrame": 5519,
+    "startSeconds": 89.65,
+    "endSeconds": 92.0,
+    "durationSeconds": 2.35
+  },
+  "overLimit": [],
+  "method": "Every decoded video frame; anchor-based RGB comparison at 320x180; \u22650.2% pixels change by \u226512/255 with mean difference \u22650.15/255 resets hold; tiny indicators and compression noise ignored."
+}
