@@ -1,1 +1,1 @@
-"""Lens: interactive relevance-feedback experiments."""
+"""Lens: a personalized arXiv reading companion powered by TabPFN."""

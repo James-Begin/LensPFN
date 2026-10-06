@@ -29,12 +29,17 @@ python3 scripts/check_submission.py
 ```
 
 This deterministic ZIP contains only extension source and icons, with no profile, pairing
-key, token, cache, environment, or model weights. The original project ZIP is retained
-under [archive/](archive/README.md); the editable checkout is the current source of truth.
+key, token, cache, environment, or model weights. Older prototypes and snapshots are
+available in Git history; the checkout contains the current product and its benchmark.
 The submission check verifies local documentation links, manifest assets, package/source
 agreement, common credential patterns, and the approved movie checksum.
 
-Keep documentation claims tied to [reported results](lens/docs/results/feedbench.md),
+Keep documentation claims tied to [reported results](docs/research/results/feedbench.md),
 and distinguish measured inference from illustrative media. Do not commit personal
 profiles, credentials, model weights, or Scholar Inbox ratings/predictions. Describe the
 trigger, resulting behavior, and validation when proposing a change.
+
+Benchmark dependencies and reproduction commands are documented in the
+[research guide](docs/research/README.md#reproduce-the-benchmark). The README comparison
+figure is regenerated with `uv run --extra bench python scripts/submission_figure.py`
+from `lens/`; it reads the reported aggregate metrics, without rerunning inference.

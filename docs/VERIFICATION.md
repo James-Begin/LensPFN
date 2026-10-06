@@ -1,7 +1,7 @@
 # Packaging verification
 
-Checked locally on 2026-10-05. These are local results; the GitHub Actions workflow is
-included and will run when these changes are pushed.
+Checked locally on 2026-10-05. These are local results. GitHub Actions repeats the automated
+checks on each push; its current status is linked from the main README.
 
 | Check | Result |
 | --- | --- |
@@ -13,13 +13,14 @@ included and will run when these changes are pushed.
 | Profile preservation | The helper refuses an existing root. Demo checks use temporary directories and leave the normal profile untouched. |
 | Extension packaging | 20 current source/assets files; manifest targets present; second rebuild produces identical ZIP bytes. |
 | Documentation | Relative file links and Markdown heading links pass `scripts/check_submission.py`. |
-| Public-file hygiene | No local profile/cache/environment paths or recognized provider/GitHub/private-key credential patterns found in the public source; archived ZIP checked too. This is a targeted check, not a complete security audit. |
+| Public-file hygiene | No local profile/cache/environment paths or recognized provider/GitHub/private-key credential patterns found in the public source; This is a targeted check, not a complete security audit. |
 | Approved video | Exact cut-07 SHA-256 matches. Existing export verification and full decoded-frame stillness reports accompany the file. |
+| Submission cleanup | Obsolete TREC-COVID code/CLI/dependency, planning notes, duplicate ZIP, and unused poster removed. Research consolidated under `docs/research/`; current app and benchmark imports verified. |
 | Patch whitespace | `git diff --check` passes. |
 
 No new full benchmark was run during documentation/packaging. Reported measurements are
 linked to the existing frozen evaluation and exploratory analyses. Existing UI validation
-is documented in the [0.7.0 release notes](../lens/docs/releases/0.7.0.md); this packaging
+is documented in the [0.7.0 release notes](research/releases/0.7.0.md); this packaging
 pass does not claim new live arXiv coverage.
 
 [Reproduce the development checks](../CONTRIBUTING.md) ·

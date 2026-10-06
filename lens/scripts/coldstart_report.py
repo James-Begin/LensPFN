@@ -1,6 +1,6 @@
 """Cold-start curve report: ranking (AUC) and probability quality (Brier) vs. ratings k.
 
-usage: python scripts/coldstart_report.py artifacts/remote/cold docs/figures
+usage: python scripts/coldstart_report.py artifacts/remote/cold ../docs/research/figures
 Writes fig_coldstart.png and coldstart_table.md. Exploratory (not pre-registered).
 """
 import glob

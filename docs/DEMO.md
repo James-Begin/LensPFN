@@ -56,7 +56,7 @@ It is labeled as a fixture and uses this companion’s demo profile for saves.
 | Question | Read |
 | --- | --- |
 | Where is TabPFN used? | [`FeedRanker`](../lens/src/lens/feed/rank.py): E5 embeddings + preference signals, `ModelVersion.V3_5_FAST`, local fit/predict. |
-| What was measured? | [Frozen plan](../lens/docs/feed-test-preregistration.md), [120-user test results](../lens/docs/results/feedbench.md), and [cold-start analysis](../lens/docs/figures/coldstart_table.md). |
+| What was measured? | [Frozen plan](research/feed-test-preregistration.md), [120-user test results](research/results/feedbench.md), and [cold-start analysis](research/figures/coldstart_table.md). |
 | Why probabilities? | Fast Brier 0.191 vs embedding-logistic 0.208; improved calibration. Ranking superiority is not claimed. |
 | How are citations resolved/cached? | [Reference resolver](../lens/src/lens/feed/references.py), [companion](../lens/src/lens/feed/bridge.py), [prefetch queue](../lens/extension/citation-prefetch.js). |
 | What stays local? | [Privacy and access](PRIVACY.md). |

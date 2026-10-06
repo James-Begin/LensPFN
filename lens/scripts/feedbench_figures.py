@@ -4,7 +4,7 @@
   fig_gate.png         (a) gate threshold vs realized precision  (b) precision vs coverage
   gate_table.md        precision at matched coverage (each user's top 30%), paired CIs
 
-usage: python scripts/feedbench_figures.py artifacts/remote/artifacts/fbtest docs/figures
+usage: python scripts/feedbench_figures.py artifacts/remote/artifacts/fbtest ../docs/research/figures
 Exploratory re-analysis of the pre-registered test predictions (no new model runs).
 """
 import glob
@@ -26,7 +26,7 @@ NAMES = {
     "emb:logistic+C0.03": ("Logistic on embeddings", "#1f77b4", "-"),
     "embsig:logistic+C0.1": ("Logistic, same inputs", "#17becf", "--"),
     "embsig:lgbm": ("LightGBM, same inputs", "#ff7f0e", "-"),
-    "roc:logistic": ("Platt-calibrated Rocchio", "#7f7f7f", ":"),
+    "roc:logistic": ("Rocchio-feature logistic (original baseline)", "#7f7f7f", ":"),
     "rocchio:g0.5": ("Rocchio (scores)", "#2ca02c", "-"),
 }
 PROB = [k for k in NAMES if k != "rocchio:g0.5"]

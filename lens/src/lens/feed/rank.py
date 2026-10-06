@@ -156,7 +156,7 @@ class Ranking:
 
 
 class FeedRanker:
-    # Thresholds chosen from the cold-start curve (docs/figures/fig_coldstart.png):
+    # Thresholds chosen from the cold-start curve (docs/research/figures/fig_coldstart.png):
     # TabPFN's P(like) beats "your own like rate" from ~30 ratings on dev and test;
     # its ranking only ties similarity ranking from ~50 ratings.
     def __init__(self, engine: str = "tabpfn-fast", device: str = "auto", seed: int = 0,

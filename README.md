@@ -95,7 +95,7 @@ flowchart LR
 
 The Chrome extension talks to an authenticated Python companion on `127.0.0.1`. E5 embeds the paper’s **title and abstract**. The ranker adds signals such as similarity to liked/disliked papers, shared authors, and category overlap. Your ratings form TabPFN’s labeled context; its classifier estimates the probability that you will mark a candidate Interested.
 
-Before enough feedback exists, Lens uses a Rocchio similarity ranker and shows no probability. Once ready, TabPFN scores the **300-paper similarity shortlist** and orders it by match. Citation papers can be scored individually outside that shortlist, with their own rating excluded from context. History features use day/session cross-fitting to reduce leakage. [Ranking implementation](lens/src/lens/feed/rank.py) · [Companion](lens/src/lens/feed/bridge.py) · [Research detail](lens/README.md#how-it-works).
+Before enough feedback exists, Lens uses a Rocchio similarity ranker and shows no probability. Once ready, TabPFN scores the **300-paper similarity shortlist** and orders it by match. Citation papers can be scored individually outside that shortlist, with their own rating excluded from context. History features use day/session cross-fitting to reduce leakage. [Ranking implementation](lens/src/lens/feed/rank.py) · [Companion](lens/src/lens/feed/bridge.py) · [Benchmark methodology](docs/research/README.md#methodology).
 
 ## Evidence
 
@@ -111,9 +111,11 @@ The pre-registered evaluation replayed explicit ratings from **120 held-out Scho
 
 TabPFN improved probability quality against every pre-registered probabilistic baseline. **We do not claim superior ranking**: the ranking non-inferiority hypothesis was not supported. The evaluation measures reranking among exposed papers, rather than discovery across all arXiv, and benchmark features include paper age while the product omits it.
 
-![Held-out reliability diagram comparing model estimates with observed interest](lens/docs/figures/fig_reliability.png)
+![Probability quality on 120 held-out users; lower Brier and per-user ECE are better](docs/figures/lens-benchmark.svg)
 
-[Frozen test plan](lens/docs/feed-test-preregistration.md) · [Full results, confidence intervals, and exploratory checks](lens/docs/results/feedbench.md) · [Cold-start evidence](lens/docs/figures/coldstart_table.md) · [Reproduction commands](lens/README.md#reproduce-the-benchmark).
+Brier measures probability error; ECE measures calibration error. **Lower is better for both.** Raw Rocchio produces similarity scores, so these probability metrics do not apply. An exploratory Platt-calibrated Rocchio scored **0.203 Brier / 0.177 ECE / 0.724 AUC**; it was added after the frozen test and is reported separately.
+
+[Frozen test plan](docs/research/feed-test-preregistration.md) · [Full results, confidence intervals, and exploratory checks](docs/research/results/feedbench.md) · [Cold-start evidence](docs/research/figures/coldstart_table.md) · [Reproduction commands](docs/research/README.md#reproduce-the-benchmark).
 
 ## Privacy and current limits
 
@@ -129,12 +131,11 @@ Lens currently requires a running local companion and an unpacked Chrome/Chromiu
 | [Getting started](docs/GETTING_STARTED.md) | Setup, devices, TabPFN access, troubleshooting |
 | [Chrome extension](lens/extension/) | Manifest V3 UI, citations, onboarding, motion |
 | [Python companion and ranker](lens/src/lens/feed/) | Authenticated bridge, persistence, embeddings, ranking, reference resolution |
-| [Research and benchmark documentation](lens/docs/README.md) | Frozen plan, results, figures, and decision history |
-| [Showcase assets](demo/showcase/) | Approved MP4, poster, chapters, attribution, and validation |
+| [Research and benchmark documentation](docs/research/README.md) | Methodology, frozen plan, results, figures, and reproduction |
+| [Showcase assets](demo/showcase/) | Approved MP4, chapters, attribution, and validation |
 | [Contributing](CONTRIBUTING.md) | Tests, CI, and extension packaging |
 | [Packaging verification](docs/VERIFICATION.md) | Fresh-environment checks, links, ZIP reproducibility, and video identity |
-| [Original snapshot](archive/) | Preserved historical ZIP; current source is in `lens/` |
 
-The optional Streamlit feed remains available with `uv run --no-sync streamlit run src/lens/feed/app.py` from `lens/`. Earlier evidence-screening experiments remain in the Python package and are documented in [the research log](lens/README.md#research-log-how-we-got-here).
+The optional Streamlit feed remains available with `uv run --no-sync streamlit run src/lens/feed/app.py` from `lens/`.
 
 Built for the TabPFN-3.5 hackathon. Lens is an independent project and is not endorsed by arXiv or Prior Labs. Third-party models, metadata, evaluation data, and paper illustrations retain their own terms; see [notices and licensing](NOTICE.md).
