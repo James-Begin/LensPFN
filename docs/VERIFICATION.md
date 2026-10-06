@@ -14,7 +14,7 @@ checks on each push; its current status is linked from the main README.
 | Extension packaging | 21 current source/assets files; manifest targets present; second rebuild produces identical ZIP bytes. |
 | Documentation | Relative file links and Markdown heading links pass `scripts/check_submission.py`. |
 | Public-file hygiene | No local profile/cache/environment paths or recognized provider/GitHub/private-key credential patterns found in the public source; This is a targeted check, not a complete security audit. |
-| Approved video | Exact cut-07 SHA-256 matches. Existing export verification and full decoded-frame stillness reports accompany the file. |
+| Updated video | 113.12-second cut-09 uploaded as a GitHub attachment; H.264/AAC, 1920×1080, 60 fps, and 6,787 decoded frames verified locally. Checksum and provenance are in the demo guide; temporary reports and MP4 stay outside the Git source tree. |
 | Submission cleanup | Obsolete TREC-COVID code/CLI/dependency, planning notes, duplicate ZIP, and unused poster removed. Research consolidated under `docs/research/`; current app and benchmark imports verified. |
 | Probability features | Prospective history excludes already-rated papers and freezes the first forecast; strict digest threshold, notification acknowledgment/retries, offline alarm restoration, early uncertainty pilot, and unrated bibliography expectation pass targeted tests. |
 | Live feature walkthrough | Real local TabPFN Fast on MPS, isolated public-demo profiles: reliability 1/2 then 2/3; Sharpen queue at 6, 7, and 8 ratings without match percentages; cold-profile digest gating; reference expectation 2.1 → 1.1 on save. Production citation modules tested through the handwritten local fixture. |
@@ -29,4 +29,4 @@ The [0.8.0 probability features](research/releases/0.8.0.md) add the browser and
 checks above; this pass does not claim new live arXiv coverage or a cold-start benchmark.
 
 [Reproduce the development checks](../CONTRIBUTING.md) ·
-[Demo setup](DEMO.md) · [Video validation](../demo/showcase/README.md#validation).
+[Demo setup](DEMO.md) · [Video validation](DEMO.md#export-checks).

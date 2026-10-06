@@ -33,4 +33,4 @@ The demo film includes attributed paper-page illustrations and public metadata. 
 content and arXiv/TabPFN names remain the property of their respective rights holders;
 no blanket license over those materials is asserted. The video’s original instrumental
 music is synthesized for this showcase. Match values and the accelerated reading history
-are illustrative. [Sources, chapters, and validation](demo/showcase/README.md).
+are illustrative. [Sources, chapters, and validation](docs/DEMO.md#showcase-provenance).

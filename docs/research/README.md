@@ -1,6 +1,6 @@
 # Evaluation and methodology
 
-[Product and video](../../README.md) · [Full reported results](results/feedbench.md) · [Frozen test plan](feed-test-preregistration.md)
+[Product and video](../../README.md) · [Full reported results](results/feedbench.md) · [Frozen test plan](https://github.com/James-Begin/LensPFN/blob/a4e3f6fb3073f93be3a30736630888451fb3cbc2/docs/research/feed-test-preregistration.md)
 
 Lens uses TabPFN for personal-interest probabilities. The pre-registered experiment
 supports better probability quality against the tested probabilistic baselines;
@@ -31,7 +31,7 @@ and planning notes are preserved in Git history.
 
 | Document | What it establishes |
 | --- | --- |
-| [Frozen test plan](feed-test-preregistration.md) | Learners, hypotheses, statistical unit, and exposure-bias caveat fixed before test evaluation. |
+| [Frozen test plan](https://github.com/James-Begin/LensPFN/blob/a4e3f6fb3073f93be3a30736630888451fb3cbc2/docs/research/feed-test-preregistration.md) | Learners, hypotheses, statistical unit, and exposure-bias caveat fixed before test evaluation. |
 | [Full results](results/feedbench.md) | Test/development metrics, paired intervals, hypothesis outcomes, and separately labeled exploratory baselines. |
 | [Cold-start table](figures/coldstart_table.md) | Probability quality versus rating count; rationale for the 30-rating threshold. |
 | [Matched-coverage table](figures/gate_table.md) | Exploratory precision comparisons and threshold coverage. |

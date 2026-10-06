@@ -1,7 +1,6 @@
-"""Check repository links, packaged extension files, and approved showcase identity."""
+"""Check repository links, packaged extension files, and the hosted showcase link."""
 from __future__ import annotations
 
-import hashlib
 from html import unescape
 import json
 from pathlib import Path
@@ -75,19 +74,13 @@ with zipfile.ZipFile(ROOT / "demo/lens-extension.zip") as archive:
         if "extension/" + name not in archive.namelist():
             errors.append(f"Manifest asset missing from extension package: {name}")
 
-movie = ROOT / "demo/showcase/Lens-demo.mp4"
-hasher = hashlib.sha256()
-with movie.open("rb") as file:
-    for chunk in iter(lambda: file.read(1024 * 1024), b""):
-        hasher.update(chunk)
-digest = hasher.hexdigest()
-expected = "eb0342f7b52d958b890e5f01dc1cff0ab403c783543ed8aea73ee677665ca165"
-if digest != expected:
-    errors.append("Showcase does not match the approved cut-07 checksum.")
+readme = (ROOT / "README.md").read_text()
+if not re.search(r"^https://github\.com/user-attachments/assets/[0-9a-f-]+$", readme, re.M):
+    errors.append("README is missing a GitHub-hosted video attachment.")
 
 if errors:
     print("\n".join(errors))
     raise SystemExit(1)
 print(f"Checked {len(files)} public files and {links} local documentation links.")
-print(f"Extension {manifest['version']} matches source; approved 92-second MP4 checksum verified.")
+print(f"Extension {manifest['version']} matches source; README video attachment link present.")
 print("No local profile/cache paths or recognized credential patterns included.")

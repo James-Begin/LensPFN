@@ -8,18 +8,26 @@
   <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB" alt="Python 3.11 or later">
 </p>
 <p align="center">
-  <a href="#demo"><b>Watch the demo</b></a> · <a href="#set-up-on-arxiv"><b>Try Lens</b></a> · <a href="#features"><b>Features</b></a> · <a href="#how-it-works"><b>How it works</b></a> · <a href="#evidence"><b>Evidence</b></a>
+  <a href="#demo"><b>Watch the demo</b></a> · <a href="#why-tabpfn-35-fast"><b>Why TabPFN</b></a> · <a href="#set-up-on-arxiv"><b>Try Lens</b></a> · <a href="#features"><b>Features</b></a> · <a href="#how-it-works"><b>How it works</b></a> · <a href="#evidence"><b>Evidence</b></a>
 </p>
 
-Lens learns which research papers interest you, then helps you find the next one **without leaving arXiv**. Rate papers, preview citations as you read, and keep a personalized shortlist in the browser side panel. **TabPFN-3.5 Fast** turns your reading history into paper match estimates, with no per-user model training.
+Lens learns which research papers interest you, then helps you find the next one **without leaving arXiv**. Rate papers, preview citations as you read, and keep a personalized shortlist in the browser side panel. **TabPFN-3.5 Fast** turns your reading history into personal interest probabilities, powering citation matches, a quiet digest, learning suggestions, and a live check of its forecasts—all with local inference and no per-user weight updates.
 
 ## Demo
 
-https://github.com/user-attachments/assets/97a7b9f9-82fa-47b8-a80c-9e6cda1d9b5f
+https://github.com/user-attachments/assets/304a96bf-a225-428b-860d-fc199f8b562d
 
-**[Watch or download the full MP4](https://github.com/James-Begin/LensPFN/raw/refs/heads/main/demo/showcase/Lens-demo.mp4)** · 1:32 · 1080p · 60 fps · original instrumental music
+**[Watch or download the full MP4](https://github.com/user-attachments/assets/304a96bf-a225-428b-860d-fc199f8b562d)** · 1:53 · 1080p · 60 fps · original instrumental music
 
-The film is a stylized walkthrough of the implemented extension. Match percentages and the accelerated rating history are illustrative. Citation interactions represent arXiv **HTML**; native PDF citation hovers are not supported. [Video provenance and chapter guide](demo/showcase/README.md).
+The film is a stylized walkthrough of the implemented extension. Match percentages and the accelerated rating history are illustrative. Citation interactions represent arXiv **HTML**; native PDF citation hovers are not supported. [Video provenance and chapter guide](docs/DEMO.md#showcase-provenance).
+
+## Why TabPFN-3.5 Fast?
+
+Each reader supplies a small, changing table: one row per rated paper, embedding and preference features as columns, and **Interested / Not for me** as the label. TabPFN uses those labeled rows as context to predict `P(Interested)` for unread papers. New feedback changes that context; Lens does not train a separate neural network for every reader. The implementation explicitly selects **`ModelVersion.V3_5_FAST`**, the smaller, faster 3.5 variant, to support repeated shortlist and citation scoring. [Model selection in Lens](lens/src/lens/feed/rank.py) · [Prior Labs’ 3.5 model guide](https://github.com/PriorLabs/TabPFN).
+
+**Probability quality is the reason to use it here.** In our frozen test, TabPFN-3.5 Fast achieved **0.191 Brier / 0.158 calibration error**, improving both against every pre-registered probabilistic baseline. Those probabilities support “only notify me above 80%,” uncertainty-guided rating suggestions, and an estimate of relevant references still unread. The live reality check lets a reader inspect how forecasts compare with their own feedback. [Evidence and limits](#evidence).
+
+Rocchio remains a useful similarity baseline and has higher ranking AUC in this evaluation. Lens’s contribution is turning TabPFN-3.5 probabilities into decisions throughout the reading workflow, with an explicit check on whether those probabilities earn the reader’s trust.
 
 ## Set up on arXiv
 
@@ -63,8 +71,9 @@ Pair Lens with this companion’s new key. The helper leaves your normal reading
 | **Read a paper** | Hover or keyboard-focus HTML citations for the cited title, authors, abstract, and match estimate. Save without losing your place. |
 | **Follow an incomplete reference** | Resolve a DOI or title to the closest arXiv version automatically; retain bibliography details and a manual-link fallback. |
 | **Keep reading** | Prefetch citation matches on page open, prioritize the hovered citation, and reuse estimates until five rating changes. |
-| **Finish exploring citations** | See top matched references and the expected number of remaining unrated references you may like, with scoring coverage. |
-| **Check for strong matches** | Opt into a quiet local Chrome digest above 80% match, and compare earlier forecasts with your later ratings. |
+| **Explore a bibliography** | See top matched references and “About N more references you may like” while you read, with scoring coverage and an immediate update after rating. |
+| **Check for strong matches** | Opt into **Digest** for local Chrome alerts strictly above 80% match; already rated and previously delivered papers stay quiet. |
+| **Check the probabilities** | See **Your 80%+ reality check**: of forecasts at least 80%, you liked X of Y papers you later rated. |
 | **Teach Lens what to look for** | Rate up to six varied papers in **Sharpen**, guided by model uncertainty after six ratings with at least two of each kind. |
 | **Refine your interests** | Watch the shortlist rerank with smooth movement and staggered arrivals; keep a Library of your ratings. |
 | **Start for the first time** | Follow guided setup, with explicit loading states, keyboard support, and reduced-motion behavior. |
@@ -79,6 +88,15 @@ Pair Lens with this companion’s new key. The helper leaves your normal reading
 
 *Frames from the showcase; scores are illustrative. Try the running extension to inspect live estimates.*
 
+## Put the probabilities to work
+
+- **Sharpen your profile:** open **Sharpen** to rate up to six informative papers. It starts with diverse suggestions. With TabPFN access and at least six ratings, including two of each kind, it combines prediction entropy (uncertainty near 50%), embedding diversity, and relevance to your interests. Each reaction refreshes the queue. Early percentages stay hidden until the normal 30-rating threshold; this is an active-learning heuristic, and faster cold-start learning is not yet established.
+- **A quieter digest:** enable **Digest** for alerts when `P(Interested) > 0.8`. **Check now** inspects the latest local scored pool; Chrome also checks every 30 minutes while the browser and companion run. Each qualifying unrated paper is delivered once, after notification creation succeeds. Fetching new arXiv metadata remains a separate action.
+- **Your 80%+ reality check:** Lens saves the first genuine forecast before your feedback. For forecasts `p ≥ 0.8` that you later rate, it shows **liked X/Y**, the observed like rate, and the mean forecast. Old Library ratings are never backfilled. This checks your selected rated sample, not calibration across all arXiv; small samples receive a caution.
+- **How much is left worth exploring?** On an HTML paper, Lens sums probabilities across distinct resolved, scored, unrated references: `expected likes remaining = Σ pᵢ`. For example, 0.9 + 0.8 + 0.6 gives 2.3 expected likes, displayed as about 2. Rating a reference removes it immediately. Coverage shows scored and unavailable references; the estimate is not a guaranteed count or an assessment of the whole unscored bibliography.
+
+[Feature implementation and validation](docs/research/releases/0.8.0.md) · [Forecast persistence](lens/src/lens/feed/insights.py) · [Learning queue](lens/src/lens/feed/bridge.py).
+
 ## How it works
 
 ```mermaid
@@ -89,10 +107,13 @@ flowchart LR
     C --> F[Paper embeddings + preference signals]
     R --> F
     F --> T[Local TabPFN-3.5 Fast]
-    T --> M[Match estimates + reranked Next reads]
+    T --> M[Personal interest probabilities]
+    M --> N[Reranked Next reads]
+    M --> D[Quiet digest + reality check]
+    T --> U[Uncertainty + diversity learning queue]
     H[HTML bibliography] --> L[arXiv ID / DOI / title resolution]
     L --> F
-    M --> P[Citation previews + top matches]
+    M --> P[Citation previews + remaining-reference estimate]
 ```
 
 The Chrome extension talks to an authenticated Python companion on `127.0.0.1`. E5 embeds the paper’s **title and abstract**. The ranker adds signals such as similarity to liked/disliked papers, shared authors, and category overlap. Your ratings form TabPFN’s labeled context; its classifier estimates the probability that you will mark a candidate Interested.
@@ -117,7 +138,7 @@ TabPFN improved probability quality against every pre-registered probabilistic b
 
 Brier measures probability error; ECE measures calibration error. **Lower is better for both.** Raw Rocchio produces similarity scores, so these probability metrics do not apply. An exploratory Platt-calibrated Rocchio scored **0.203 Brier / 0.177 ECE / 0.724 AUC**; it was added after the frozen test and is reported separately.
 
-[Frozen test plan](docs/research/feed-test-preregistration.md) · [Full results, confidence intervals, and exploratory checks](docs/research/results/feedbench.md) · [Cold-start evidence](docs/research/figures/coldstart_table.md) · [Reproduction commands](docs/research/README.md#reproduce-the-benchmark).
+[Frozen test plan](https://github.com/James-Begin/LensPFN/blob/a4e3f6fb3073f93be3a30736630888451fb3cbc2/docs/research/feed-test-preregistration.md) · [Full results, confidence intervals, and exploratory checks](docs/research/results/feedbench.md) · [Cold-start evidence](docs/research/figures/coldstart_table.md) · [Reproduction commands](docs/research/README.md#reproduce-the-benchmark).
 
 ## Privacy and current limits
 
@@ -134,7 +155,7 @@ Lens currently requires a running local companion and an unpacked Chrome/Chromiu
 | [Chrome extension](lens/extension/) | Manifest V3 UI, citations, onboarding, motion |
 | [Python companion and ranker](lens/src/lens/feed/) | Authenticated bridge, persistence, embeddings, ranking, reference resolution |
 | [Research and benchmark documentation](docs/research/README.md) | Methodology, frozen plan, results, figures, and reproduction |
-| [Showcase assets](demo/showcase/) | Approved MP4, chapters, attribution, and validation |
+| [Showcase provenance](docs/DEMO.md#showcase-provenance) | Video chapters, illustrative feature ledger, attribution, and export checks |
 | [Contributing](CONTRIBUTING.md) | Tests, CI, and extension packaging |
 | [Packaging verification](docs/VERIFICATION.md) | Fresh-environment checks, links, ZIP reproducibility, and video identity |
 
