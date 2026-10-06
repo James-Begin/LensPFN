@@ -19,8 +19,6 @@ https://github.com/user-attachments/assets/304a96bf-a225-428b-860d-fc199f8b562d
 
 **[Watch or download the full MP4](https://github.com/user-attachments/assets/304a96bf-a225-428b-860d-fc199f8b562d)** · 1:53 · 1080p · 60 fps · original instrumental music
 
-The film is a stylized walkthrough of the implemented extension. Match percentages and the accelerated rating history are illustrative. Citation interactions represent arXiv **HTML**; native PDF citation hovers are not supported. [Video provenance and chapter guide](docs/DEMO.md#showcase-provenance).
-
 ## Why TabPFN-3.5 Fast?
 
 Each reader supplies a small, changing table: one row per rated paper, embedding and preference features as columns, and **Interested / Not for me** as the label. TabPFN uses those labeled rows as context to predict `P(Interested)` for unread papers. New feedback changes that context; Lens does not train a separate neural network for every reader. The implementation explicitly selects **`ModelVersion.V3_5_FAST`**, the smaller, faster 3.5 variant, to support repeated shortlist and citation scoring. [Model selection in Lens](lens/src/lens/feed/rank.py) · [Prior Labs’ 3.5 model guide](https://github.com/PriorLabs/TabPFN).
@@ -155,9 +153,7 @@ Lens currently requires a running local companion and an unpacked Chrome/Chromiu
 | [Chrome extension](lens/extension/) | Manifest V3 UI, citations, onboarding, motion |
 | [Python companion and ranker](lens/src/lens/feed/) | Authenticated bridge, persistence, embeddings, ranking, reference resolution |
 | [Research and benchmark documentation](docs/research/README.md) | Methodology, frozen plan, results, figures, and reproduction |
-| [Showcase provenance](docs/DEMO.md#showcase-provenance) | Video chapters, illustrative feature ledger, attribution, and export checks |
 | [Contributing](CONTRIBUTING.md) | Tests, CI, and extension packaging |
-| [Packaging verification](docs/VERIFICATION.md) | Fresh-environment checks, links, ZIP reproducibility, and video identity |
 
 The optional Streamlit feed remains available with `uv run --no-sync streamlit run src/lens/feed/app.py` from `lens/`.
 
