@@ -23,7 +23,7 @@ three of each label. Citation scoring excludes the cited paper's own rating. The
 exploratory no-age variant retained Brier 0.191 on the same test users.
 
 Scholar Inbox's own ranker selected the exposed papers: results measure reranking
-among rated papers, rather than discovery over all arXiv. 
+among rated papers, rather than discovery over all arXiv.
 ## Read the evidence
 
 | Document | What it establishes |

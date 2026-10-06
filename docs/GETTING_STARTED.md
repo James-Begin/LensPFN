@@ -109,4 +109,3 @@ at `chrome://extensions`, then refresh open arXiv tabs. Version 0.8.0 adds Chrom
 | Port already in use | Stop the other companion on 8765 before starting another profile. The extension uses the standard port. |
 | New scripts or API routes do not appear | Restart the companion, reload Lens at `chrome://extensions`, and refresh existing arXiv tabs. |
 | No digest alert | Enable alerts in Digest, allow Chrome notifications, keep Chrome and the companion running, and fetch a batch. Only new papers strictly above 80% qualify. |
-

@@ -12,4 +12,3 @@ Run commands here so uv finds the pinned environment.
 | [src/lens/feedbench.py](src/lens/feedbench.py) | Reproducible Scholar Inbox evaluation. |
 | [scripts/](scripts/) | Demo-profile preparation, benchmark reports, and figure generation. |
 | [tests/](tests/) | Python/JavaScript tests and browser interaction fixtures. |
-
