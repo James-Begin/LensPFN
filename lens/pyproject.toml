@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lens-search"
+version = "0.8.0"
+description = "Personalized arXiv reading companion powered by TabPFN-3.5 Fast"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=2,<3",
+  "scikit-learn>=1.6,<2",
+]
+
+[project.optional-dependencies]
+semantic = ["sentence-transformers>=6.1,<7"]
+# Explicit 3.5 / 3.5 Fast model selection is verified by `lens doctor`.
+tabpfn = ["tabpfn>=9.0.0,<10"]
+dev = ["ruff==0.13.3"]
+bench = ["pyarrow>=15", "pandas>=2", "lightgbm>=4.4", "matplotlib>=3.8,<4"]
+
+[project.scripts]
+lens = "lens.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lens"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["F"]

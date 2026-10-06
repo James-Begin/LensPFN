@@ -1,0 +1,1183 @@
+{
+ "name": "Prior Labs researcher (demo)",
+ "description": "Liked the 29 TabPFN-family papers cited in the TabPFN-3.5 technical report; disliked 15 near-miss papers (LLM reasoning, RL, diffusion, a few vision/robotics). Demo pool: 300 cs.LG/stat.ML candidates selected from public arXiv metadata harvested 2026-09-25 to 2026-10-02.",
+ "interests": "tabular foundation models, in-context learning, prior-data fitted networks",
+ "likes": [
+  {
+   "id": "2207.01848",
+   "title": "TabPFN: A Transformer That Solves Small Tabular Classification Problems in a Second",
+   "abstract": "We present TabPFN, a trained Transformer that can do supervised classification for small tabular datasets in less than a second, needs no hyperparameter tuning and is competitive with state-of-the-art classification methods. TabPFN performs in-context learning (ICL), it learns to make predictions using sequences of labeled examples (x, f(x)) given in the input, without requiring further parameter updates. TabPFN is fully entailed in the weights of our network, which accepts training and test samples as a set-valued input and yields predictions for the entire test set in a single forward pass. TabPFN is a Prior-Data Fitted Network (PFN) and is trained offline once, to approximate Bayesian inference on synthetic datasets drawn from our prior. This prior incorporates ideas from causal reasoning: It entails a large space of structural causal models with a preference for simple structures. On the 18 datasets in the OpenML-CC18 suite that contain up to 1 000 training data points, up to 100 purely numerical features without missing values, and up to 10 classes, we show that our method clearly outperforms boosted trees and performs on par with complex state-of-the-art AutoML systems with up to 230$\\times$ speedup. This increases to a 5 700$\\times$ speedup when using a GPU. We also validate these results on an additional 67 small numerical datasets from OpenML. We provide all our code, the trained TabPFN, an interactive browser demo and a Colab notebook at https://github.com/automl/TabPFN.",
+   "authors": [
+    "Noah Hollmann",
+    "Samuel M\u00fcller",
+    "Katharina Eggensperger",
+    "Frank Hutter"
+   ],
+   "categories": [
+    "cs.LG",
+    "stat.ML"
+   ],
+   "primary": "cs.LG",
+   "created": "2023-09-16",
+   "updated": "2023-09-19",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2207.01848",
+   "rated_at": "2026-09-05"
+  },
+  {
+   "id": "2511.08667",
+   "title": "TabPFN-2.5: Advancing the State of the Art in Tabular Foundation Models",
+   "abstract": "The first tabular foundation model, TabPFN, and its successor TabPFNv2 have impacted tabular AI substantially, with dozens of methods building on it and hundreds of applications across different use cases. This report introduces TabPFN-2.5, the next generation of our tabular foundation model, built for datasets with up to 50,000 data points and 2,000 features, a 20x increase in data cells compared to TabPFNv2. TabPFN-2.5 is now the leading method for the industry standard benchmark TabArena (which contains datasets with up to 100,000 training data points), substantially outperforming tuned tree-based models and matching the accuracy of AutoGluon 1.4, a complex four-hour tuned ensemble that even includes the previous TabPFNv2. Remarkably, default TabPFN-2.5 has a 100% win rate against default XGBoost on small to medium-sized classification datasets (<=10,000 data points, 500 features) and a 87% win rate on larger datasets up to 100K samples and 2K features (85% for regression). For production use cases, we introduce a new distillation engine that converts TabPFN-2.5 into a compact MLP or tree ensemble, preserving most of its accuracy while delivering orders-of-magnitude lower latency and plug-and-play deployment. This new release will immediately strengthen the performance of the many applications and methods already built on the TabPFN ecosystem.",
+   "authors": [
+    "L\u00e9o Grinsztajn",
+    "Klemens Fl\u00f6ge",
+    "Oscar Key",
+    "Felix Birkel",
+    "Philipp Jund",
+    "Brendan Roof",
+    "Benjamin J\u00e4ger",
+    "Dominik Safaric",
+    "Simone Alessi",
+    "Adrian Hayler",
+    "Mihir Manium",
+    "Rosen Yu",
+    "Felix Jablonski",
+    "Shi Bin Hoo",
+    "Anurag Garg",
+    "Jake Robertson",
+    "Magnus B\u00fchler",
+    "Vladyslav Moroshan",
+    "Lennart Purucker",
+    "Clara Cornu",
+    "Lilly Charlotte Wehrhahn",
+    "Alessandro Bonetto",
+    "Bernhard Sch\u00f6lkopf",
+    "Sauraj Gambhir",
+    "Noah Hollmann",
+    "Frank Hutter"
+   ],
+   "categories": [
+    "cs.LG",
+    "stat.ML"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-02-05",
+   "updated": "2026-02-06",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2511.08667",
+   "rated_at": "2026-09-06"
+  },
+  {
+   "id": "2605.13986",
+   "title": "TabPFN-3: Technical Report",
+   "abstract": "Tabular data underpins most high-value prediction problems in science and industry, and TabPFN has driven the foundation model revolution for this modality. Designed with feedback from our users, TabPFN-3 builds on this foundation to scale state-of-the-art performance to datasets with 1M training rows and substantially reduce training and inference time. Pretrained exclusively on synthetic data from our prior, TabPFN-3 dramatically pushes the frontier of tabular prediction and brings substantial gains on time series, relational, and tabular-text data. On the standard tabular benchmark TabArena, a forward pass of TabPFN-3 outperforms all other models, including tuned and ensembled baselines, by a significant margin, and pareto-dominates the speed/performance frontier. On more diverse datasets, TabPFN-3 ranks first on datasets with many classes, and beats 8-hour-tuned gradient-boosted-tree baselines on datasets up to 1M training rows and 200 features. TabPFN-3 introduces test-time compute scaling to tabular foundation models. Our API offering TabPFN-3-Plus (Thinking) exploits this to beat all non-TabPFN models by over 200 Elo on TabArena, rising to 420 Elo on the largest data subset, and outperforms AutoGluon 1.5 extreme while being 10x faster, without using LLMs, real data, internet search or any other model besides TabPFN. TabPFN-3 extends the capabilities of our models, enabling SOTA prediction on relational data (new SOTA foundation model on RelBenchV1) and tabular-text data (SOTA on TabSTAR via TabPFN-3-Plus); and improves existing integrations: a specialized checkpoint, TabPFN-TS-3, ranks 2nd on the time-series benchmark fev-bench, and SHAP-value computation is up to 120x faster. TabPFN-3 achieves this performance while being up to 20x faster than TabPFN-2.5. In addition, a reduced KV cache and row-chunking scale to 1M rows on one H100 with fast inference speed.",
+   "authors": [
+    "L\u00e9o Grinsztajn",
+    "Klemens Fl\u00f6ge",
+    "Oscar Key",
+    "Felix Birkel",
+    "Philipp Jund",
+    "Brendan Roof",
+    "Mihir Manium",
+    "Shi Bin Hoo",
+    "Magnus B\u00fchler",
+    "Anurag Garg",
+    "Dominik Safaric",
+    "Jake Robertson",
+    "Benjamin J\u00e4ger",
+    "Simone Alessi",
+    "Adrian Hayler",
+    "Vladyslav Moroshan",
+    "Lennart Purucker",
+    "Philipp Singer",
+    "Alan Arazi",
+    "Julien Siems",
+    "Jan Hendrik Metzen",
+    "Georg Grab",
+    "Nick Erickson",
+    "Siyuan Guo",
+    "Eliott Kalfon",
+    "Simon Bing",
+    "David Salinas",
+    "Clara Cornu",
+    "Lilly Charlotte Wehrhahn",
+    "Diana Kriuchkova",
+    "Kursat Kaya",
+    "Lydia Sidhoum",
+    "Marie Salmon",
+    "Jerry Chen",
+    "Madelon Hulsebos",
+    "Yann LeCun",
+    "Samuel M\u00fcller",
+    "Bernhard Sch\u00f6lkopf",
+    "Sauraj Gambhir",
+    "Noah Hollmann",
+    "Frank Hutter"
+   ],
+   "categories": [
+    "cs.LG",
+    "stat.ML"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-05-28",
+   "updated": "2026-05-29",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2605.13986",
+   "rated_at": "2026-09-07"
+  },
+  {
+   "id": "2609.17895",
+   "title": "TabPFN-3.5: Technical Report",
+   "abstract": "We introduce TabPFN-3.5, our new flagship Tabular Foundation Model. It significantly outperforms its predecessor, TabPFN-3, and all existing baselines across a broad range of tabular problems. TabPFN-3.5 sets a new state of the art on standard tabular prediction in TabArena, and extends it to the data practitioners encounter in practice: non-i.i.d. data with temporal or grouped splits, tables with strings, text and images, high-cardinality categorical features, and wide tables with many features. These gains carry over to our task-specific harnesses: state of the art on relational data and stronger time-series forecasting. For faster inference, our variant TabPFN-3.5-Fast runs up to 3x faster than TabPFN-3 while keeping most of the accuracy gains. In addition, we upgrade TabPFN-3.5-Plus, expanding our multimodal capabilities with advanced text and date handling alongside proprietary inference optimizations. Finally, we release a new version of our Thinking mode, TabPFN-3.5-Thinking, which scales inference-time computation to push the state of the art further. It benefits from our stronger base model and from inference-time improvements that make it up to 12x faster than TabPFN-3-Thinking.",
+   "authors": [
+    "Benjamin J\u00e4ger",
+    "Nick Erickson",
+    "L\u00e9o Grinsztajn",
+    "Felix Birkel",
+    "Klemens Fl\u00f6ge",
+    "Oscar Key",
+    "K\u00fcr\u015fat Kaya",
+    "Jonas K\u00fcbler",
+    "Ad\u00e8le Frankel",
+    "Tobias Schr\u00f6der",
+    "Anurag Garg",
+    "Jan Hendrik Metzen",
+    "David Salinas",
+    "Simon Bing",
+    "Kristina Collins",
+    "Tuana \u00c7elik",
+    "Vahid Balazadeh",
+    "Lydia Sidhoum",
+    "Tom\u00e1s Pereda",
+    "Brendan Roof",
+    "Andrej Tschalzev",
+    "Siyuan Guo",
+    "Philipp Singer",
+    "Lennart Purucker",
+    "Jake Robertson",
+    "Marie Salmon",
+    "Philipp Jund",
+    "Jerry Chen",
+    "Diana Kriuchkova",
+    "Arthur Cahu",
+    "Eliott Kalfon",
+    "Adrian Hayler",
+    "Georg Grab",
+    "Vitor Monteiro",
+    "Lilly Wehrhahn",
+    "Dominik Safaric",
+    "Clara Cornu",
+    "Alan Arazi",
+    "Rylee Grace",
+    "Simone Alessi",
+    "Mihir Manium",
+    "Bernhard Sch\u00f6lkopf",
+    "Yann LeCun",
+    "Madelon Hulsebos",
+    "Sauraj Gambhir",
+    "Noah Hollmann",
+    "Frank Hutter"
+   ],
+   "categories": [
+    "cs.LG",
+    "stat.ML"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-09-22",
+   "updated": "2026-09-24",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2609.17895",
+   "rated_at": "2026-09-23"
+  },
+  {
+   "id": "2606.30410",
+   "title": "Beyond IID: How General Are Tabular Foundation Models, Really?",
+   "abstract": "Foundation models for predictive machine learning on tabular data have recently gained significant traction in academia and industry. Research communities across disciplines are increasingly evaluating tabular foundation models on diverse datasets and tasks. However, these task- and discipline-specific evaluations remain largely inaccessible to model researchers because benchmark software and evaluation protocols are fragmented. As a result, model researchers rely on standard benchmarks, which are mostly defined for tasks where tabular foundation models already excel. The most challenging scenarios are excluded, limiting meaningful progress in the field by focusing on marginal improvements on IID data rather than on broader, more demanding challenges. To overcome this, we introduce BeyondArena, the first unified holistic benchmark for tabular data that supports diverse task types (IID, temporal, grouped), across sample size and feature dimensionality scales, with diverse feature types (with text, with high cardinality) from a broad range of disciplines. To enable unified benchmarking beyond standard benchmarks, we introduce Data Foundry, a Python framework and metadata schema for curating tabular datasets for predictive machine learning. Our results across 11 models and 142 curated datasets show that existing tabular foundation models excel on tiny- to medium-sized IID data, while traditional tree-based and deep learning models still dominate on non-IID, large, and high-dimensional datasets. BeyondArena guides model research for the most demanding challenges in tabular data, enabling progress towards truly foundational tabular models.",
+   "authors": [
+    "Lennart Purucker",
+    "Andrej Tschalzev",
+    "Nick Erickson",
+    "Gioia Blayer",
+    "David Holzm\u00fcller",
+    "Alan Arazi",
+    "Alexander Pfefferle",
+    "Mustafa Tajjar",
+    "Ga\u00ebl Varoquaux",
+    "Frank Hutter"
+   ],
+   "categories": [
+    "cs.LG",
+    "cs.AI"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-06-29",
+   "updated": "2026-06-30",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2606.30410",
+   "rated_at": "2026-09-09"
+  },
+  {
+   "id": "2605.12292",
+   "title": "STRABLE: Benchmarking Tabular Machine Learning with Strings",
+   "abstract": "Benchmarking tabular learning has revealed the benefit of dedicated architectures, pushing the state of the art. But real-world tables often contain string entries, beyond numbers, and these settings have been understudied due to a lack of a solid benchmarking suite. They lead to new research questions: Are dedicated learners needed, with end-to-end modeling of strings and numbers? Or does it suffice to encode strings as numbers, as with a categorical encoding? And if so, do the resulting tables resemble numerical tabular data, calling for the same learners? To enable these studies, we contribute STRABLE, a benchmarking corpus of 108 tables, all real-world learning problems with strings and numbers across diverse application fields. We run the first large-scale empirical study of tabular learning with strings, evaluating 445 pipelines. These pipelines span end-to-end architectures and modular pipelines, where strings are first encoded, then post-processed, and finally passed to a tabular learner. We find that, because most tables in the wild are categorical-dominant, advanced tabular learners paired with simple string embeddings achieve good predictions at low computational cost. On free-text-dominant tables, large LLM encoders become competitive. Their performance also appears sensitive to post-processing, with differences across LLM families. Finally, we show that STRABLE is a good set of tables to study \"string tabular\" learning as it leads to generalizable pipeline rankings that are close to the oracle rankings. We thus establish STRABLE as a foundation for research on tabular learning with strings, an important yet understudied area.",
+   "authors": [
+    "Gioia Blayer",
+    "Myung Jun Kim",
+    "F\u00e9lix Lefebvre",
+    "Lennart Purucker",
+    "Alan Arazi",
+    "Eilam Shapira",
+    "Roi Reichart",
+    "Frank Hutter",
+    "Marine Le Morvan",
+    "David Holzm\u00fcller",
+    "Ga\u00ebl Varoquaux"
+   ],
+   "categories": [
+    "cs.LG"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-05-12",
+   "updated": "2026-05-13",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2605.12292",
+   "rated_at": "2026-09-10"
+  },
+  {
+   "id": "2605.10616",
+   "title": "MulTaBench: Benchmarking Multimodal Tabular Learning with Text and Image",
+   "abstract": "Tabular Foundation Models have recently established the state of the art in supervised tabular learning, by leveraging pretraining to learn generalizable representations of numerical and categorical structured data. However, they lack native support for unstructured modalities such as text and image, and rely on frozen, pretrained embeddings to process them. On established Multimodal Tabular Learning benchmarks, we show that tuning the embeddings to the task improves performance. Existing benchmarks, however, often focus on the mere co-occurrence of modalities; this leads to high variance across datasets and masks the benefits of task-specific tuning. To address this gap, we introduce MulTaBench, a benchmark of 40 datasets, split equally between image-tabular and text-tabular tasks. We focus on predictive tasks where the modalities provide complementary predictive signal, and where generic embeddings lose critical information, necessitating Target-Aware Representations that are aligned with the task. Our experimental results demonstrate that the gains from target-aware representation tuning generalize across both text and image modalities, several tabular learners, encoder scales, and embedding dimensions. MulTaBench constitutes the largest image-tabular benchmarking effort to date, spanning high-impact domains such as healthcare and e-commerce. It is designed to enable the research of novel architectures which incorporate joint modeling and target-aware representations, paving the way for the development of novel Multimodal Tabular Foundation Models.",
+   "authors": [
+    "Alan Arazi",
+    "Eilam Shapira",
+    "Shoham Grunblat",
+    "Mor Ventura",
+    "Elad Hoffer",
+    "Gioia Blayer",
+    "David Holzm\u00fcller",
+    "Lennart Purucker",
+    "Ga\u00ebl Varoquaux",
+    "Frank Hutter",
+    "Roi Reichart"
+   ],
+   "categories": [
+    "cs.LG",
+    "cs.CL",
+    "cs.CV"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-09-27",
+   "updated": "2026-09-29",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2605.10616",
+   "rated_at": "2026-09-28"
+  },
+  {
+   "id": "2608.16319",
+   "title": "Advancing Open and Reproducible Relational Learning: RelArena-$\u03b1$, TabPFN-Rel and RPI",
+   "abstract": "This first release of Prior Labs in relational learning shows our continued commitment to open science. We open-source three pieces of software that we expect to accelerate research in the field towards meaningful real-world impact. We aim to steer further development based on feedback from, and in collaboration with, the community. Given the early stage of development, our $\u03b1$-release targets researchers and early-adopting practitioners. Over the past years, a variety of datasets and tasks for relational learning have emerged, but the community has not converged on a reliable, reproducible way to compare different methods on these tasks. Our $\u03b1$-release, RelArena-$\u03b1$, provides a unified framework for running and comparing baselines on RelBench v1 by standardizing data loading, evaluation protocols, tuning regimes, and support for systems with custom tuning, inspired by established tabular benchmarks such as TabArena. We plan to work with the research community to further develop RelArena-$\u03b1$ into a catalyst for progress in the relational learning community. We release the initial version of TabPFN-Rel, a purpose-built relational harness for TabPFN-3. Currently ranked first among models on RelArena-$\u03b1$, TabPFN-Rel makes key improvements upon RDBLearn. Beyond its ranking, TabPFN-Rel serves as a strong baseline, adding to the growing evidence that flattening a relational database into a single table remains competitive with specialized relational architectures on real-world tasks. To facilitate adoption of relational learning methods in research and industry, we release an initial $\u03b1$-version of our Relational Predictive Interface, RPI, an open-source, model-agnostic interface that enables early adopters to easily define problems on new databases and apply any model implemented in RelArena-$\u03b1$, including TabPFN-Rel, to these problems.",
+   "authors": [
+    "Adrian Hayler",
+    "Klemens Fl\u00f6ge",
+    "Alan Arazi",
+    "Rishabh Ranjan",
+    "Jure Leskovec",
+    "Felix Birkel",
+    "Brendan Roof",
+    "Anurag Garg",
+    "Kristina Collins",
+    "Lydia Sidhoum",
+    "Jonas K\u00fcbler",
+    "Siyuan Guo",
+    "Oscar Key",
+    "Jan Hendrik Metzen",
+    "Rylee Grace",
+    "David Salinas",
+    "Arthur Cahu",
+    "Simon Bing",
+    "Benjamin J\u00e4ger",
+    "Tuana \u00c7elik",
+    "Mihir Manium",
+    "Vitor Monteiro",
+    "Jake Robertson",
+    "Jerry Chen",
+    "Eliott Kalfon",
+    "Tom\u00e1s Pereda",
+    "Lilly Wehrhahn",
+    "Dominik Safaric",
+    "Tobias Schroeder",
+    "Georg Grab",
+    "Diana Kriuchkova",
+    "Clara Cornu",
+    "Philipp Singer",
+    "Nick Erickson",
+    "Vahid Balazadeh",
+    "Marie Salmon",
+    "Simone Alessi",
+    "K\u00fcr\u015fat Kaya",
+    "Philipp Jund",
+    "L\u00e9o Grinsztajn",
+    "Yann LeCun",
+    "Bernhard Sch\u00f6lkopf",
+    "Madelon Hulsebos",
+    "Lennart Purucker",
+    "Sauraj Gambhir",
+    "Frank Hutter",
+    "Noah Hollmann"
+   ],
+   "categories": [
+    "cs.LG"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-09-07",
+   "updated": "2026-09-09",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2608.16319",
+   "rated_at": "2026-09-12"
+  },
+  {
+   "id": "2509.26468",
+   "title": "fev-bench: A Realistic Benchmark for Time Series Forecasting",
+   "abstract": "Benchmark quality is critical for meaningful evaluation and sustained progress in time series forecasting, particularly with the rise of pretrained models. Existing benchmarks often have limited domain coverage or overlook real-world settings such as tasks with covariates. Their aggregation procedures frequently lack statistical rigor, making it unclear whether observed performance differences reflect true improvements or random variation. Many benchmarks lack consistent evaluation infrastructure or are too rigid for integration into existing pipelines. To address these gaps, we propose fev-bench, a benchmark of 100 forecasting tasks across seven domains, including 46 with covariates. Supporting the benchmark, we introduce fev, a lightweight Python library for forecasting evaluation emphasizing reproducibility and integration with existing workflows. Using fev, fev-bench employs principled aggregation with bootstrapped confidence intervals to report performance along two dimensions: win rates and skill scores. We report results on fev-bench for pretrained, statistical, and baseline models and identify promising future research directions.",
+   "authors": [
+    "Oleksandr Shchur",
+    "Abdul Fatir Ansari",
+    "Caner Turkmen",
+    "Lorenzo Stella",
+    "Nick Erickson",
+    "Pablo Guerron",
+    "Michael Bohlke-Schneider",
+    "Yuyang Wang"
+   ],
+   "categories": [
+    "cs.LG"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-06-30",
+   "updated": "2026-07-01",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2509.26468",
+   "rated_at": "2026-09-13"
+  },
+  {
+   "id": "2501.02945",
+   "title": "From Tables to Time: Extending TabPFN-v2 to Time Series Forecasting",
+   "abstract": "Recent progress in foundation models has enabled strong zero-shot performance for time series forecasting. In this work, we show that such capabilities can also emerge from tabular foundation models. We introduce TabPFN-TS, a simple method that treats forecasting as a tabular regression problem by combining lightweight temporal featurization with the pretrained TabPFN-v2. This formulation requires no time-series-specific pretraining and naturally supports both univariate and covariate-informed forecasting. Despite its compact size (11M parameters), TabPFN-TS achieves state-of-the-art performance on covariate-informed forecasting and competitive accuracy on univariate forecasting across the GIFT-Eval and fev-bench benchmarks. We further provide controlled analyses examining how the model interprets temporal structure, how featurization choices affect accuracy, and how forecasts change under alternative tabular backbones. Together, our results demonstrate that tabular foundation models--when paired with suitable temporal features--offer an efficient and versatile alternative for forecasting, bridging tabular and time-series learning within a unified framework. Code is available at https://github.com/PriorLabs/tabpfn-time-series.",
+   "authors": [
+    "Shi Bin Hoo",
+    "Samuel M\u00fcller",
+    "David Salinas",
+    "Frank Hutter"
+   ],
+   "categories": [
+    "cs.LG"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-01-26",
+   "updated": "2026-01-28",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2501.02945",
+   "rated_at": "2026-09-14"
+  },
+  {
+   "id": "2506.06039",
+   "title": "Do-PFN: In-Context Learning for Causal Effect Estimation",
+   "abstract": "Estimation of causal effects is critical to a range of scientific disciplines. Existing methods for this task either require interventional data, knowledge about the ground truth causal graph, or rely on assumptions such as unconfoundedness, restricting their applicability in real-world settings. In the domain of tabular machine learning, Prior-data fitted networks (PFNs) have achieved state-of-the-art predictive performance, having been pre-trained on synthetic data to solve tabular prediction problems via in-context learning. To assess whether this can be transferred to the harder problem of causal effect estimation, we pre-train PFNs on synthetic data drawn from a wide variety of causal structures, including interventions, to predict interventional outcomes given observational data. Through extensive experiments on synthetic case studies, we show that our approach allows for the accurate estimation of causal effects without knowledge of the underlying causal graph. We also perform ablation studies that elucidate Do-PFN's scalability and robustness across datasets with a variety of causal characteristics.",
+   "authors": [
+    "Jake Robertson",
+    "Arik Reuter",
+    "Siyuan Guo",
+    "Noah Hollmann",
+    "Frank Hutter",
+    "Bernhard Sch\u00f6lkopf"
+   ],
+   "categories": [
+    "cs.LG"
+   ],
+   "primary": "cs.LG",
+   "created": "2025-11-20",
+   "updated": "2025-11-21",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2506.06039",
+   "rated_at": "2026-09-15"
+  },
+  {
+   "id": "2506.07918",
+   "title": "CausalPFN: Amortized Causal Effect Estimation via In-Context Learning",
+   "abstract": "Causal effect estimation from observational data is fundamental across various applications. However, selecting an appropriate estimator from dozens of specialized methods demands substantial manual effort and domain expertise. We present CausalPFN, a single transformer that amortizes this workflow: trained once on a large library of simulated data-generating processes that satisfy ignorability, it infers causal effects for new observational datasets out of the box. CausalPFN combines ideas from Bayesian causal inference with the large-scale training protocol of prior-fitted networks (PFNs), learning to map raw observations directly to causal effects without any task-specific adjustment. Our approach achieves superior average performance on heterogeneous and average treatment effect estimation benchmarks (IHDP, Lalonde, ACIC). Moreover, it shows competitive performance for real-world policy making on uplift modeling tasks. CausalPFN provides calibrated uncertainty estimates to support reliable decision-making based on Bayesian principles. This ready-to-use model requires no further training or tuning and takes a step toward automated causal inference (https://github.com/vdblm/CausalPFN/).",
+   "authors": [
+    "Vahid Balazadeh",
+    "Hamidreza Kamkari",
+    "Valentin Thomas",
+    "Benson Li",
+    "Junwei Ma",
+    "Jesse C. Cresswell",
+    "Rahul G. Krishnan"
+   ],
+   "categories": [
+    "cs.LG",
+    "stat.ML"
+   ],
+   "primary": "cs.LG",
+   "created": "2025-10-27",
+   "updated": "2025-10-29",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by-nc-sa/4.0/",
+   "url": "https://arxiv.org/abs/2506.07918",
+   "rated_at": "2026-09-16"
+  },
+  {
+   "id": "2506.10914",
+   "title": "Foundation Models for Causal Inference via Prior-Data Fitted Networks",
+   "abstract": "Prior-data fitted networks (PFNs) have recently been proposed as a promising way to train tabular foundation models. PFNs are transformers that are pre-trained on synthetic data generated from a prespecified prior distribution and that enable Bayesian inference through in-context learning. In this paper, we introduce CausalFM, a comprehensive framework for training PFN-based foundation models in various causal inference settings. First, we formalize the construction of Bayesian priors for causal inference based on structural causal models (SCMs) in a principled way and derive necessary criteria for the validity of such priors. Building on this, we propose a novel family of prior distributions using causality-inspired Bayesian neural networks that enable CausalFM to perform Bayesian causal inference in various settings, including for back-door, front-door, and instrumental variable adjustment. Finally, we instantiate CausalFM and explicitly train models to perform in-context learning in these settings. We show that CausalFM achieves competitive in-context learning performance even when compared to baselines that are specifically trained for the task at hand. In sum, our framework can be used as a general recipe to train foundation models for various causal inference settings. In contrast to the current state-of-the-art in causal inference, CausalFM offers a novel paradigm with the potential to fundamentally change how practitioners perform causal inference in medicine, economics, and other disciplines.",
+   "authors": [
+    "Yuchen Ma",
+    "Dennis Frauen",
+    "Emil Javurek",
+    "Stefan Feuerriegel"
+   ],
+   "categories": [
+    "cs.LG"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-02-24",
+   "updated": "2026-02-25",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2506.10914",
+   "rated_at": "2026-09-17"
+  },
+  {
+   "id": "2509.07143",
+   "title": "Bringing Graphs to the Table: Zero-shot Node Classification via Tabular Foundation Models",
+   "abstract": "Graph foundation models (GFMs) have recently emerged as a promising paradigm for achieving broad generalization across various graph data. However, existing GFMs are often trained on datasets that may not fully reflect real-world graphs, limiting their generalization performance. In contrast, tabular foundation models (TFMs) not only excel at classical tabular prediction tasks but have also shown strong applicability in other domains such as time series forecasting, natural language processing, and computer vision. Motivated by this, we take an alternative view to the standard perspective of GFMs and reformulate node classification as a tabular problem. In this reformulation, each node is represented as a row with feature, structure, and label information as columns, enabling TFMs to directly perform zero-shot node classification via in-context learning. In this work, we introduce TAG, a tabular approach for graph learning that first converts a graph into a table via feature and structural encoders, applies multiple TFMs to diversely subsampled tables, and then aggregates their outputs through ensemble selection. Experiments on 28 real-world datasets demonstrate that TAG consistently improves upon task-specific GNNs and state-of-the-art GFMs, highlighting the potential of the tabular reformulation for scalable and generalizable graph learning.",
+   "authors": [
+    "Adrian Hayler",
+    "Xingyue Huang",
+    "\u0130smail \u0130lkan Ceylan",
+    "Michael Bronstein",
+    "Ben Finkelshtein"
+   ],
+   "categories": [
+    "cs.LG"
+   ],
+   "primary": "cs.LG",
+   "created": "2025-10-08",
+   "updated": "2025-10-10",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2509.07143",
+   "rated_at": "2026-09-18"
+  },
+  {
+   "id": "2509.21489",
+   "title": "GraphPFN: A Prior-Data Fitted Graph Foundation Model",
+   "abstract": "Graph foundation models face several fundamental challenges including transferability across diverse domains and data scarcity, which calls into question the very feasibility of creating such models. However, despite similar challenges, the tabular domain has recently witnessed the emergence of the first successful foundation models such as TabPFN. These models are based on the prior-data fitted networks (PFN) framework, in which models are pretrained on carefully designed synthetic datasets to make predictions in an in-context learning setting. Recently, G2T-FM, a framework that converts graph node-level tasks into tabular tasks, has made the first step towards adopting PFNs for graphs, yet it is limited to hand-crafted features and was never pretrained on graph data. In this work, we make the next step by proposing GraphPFN, a PFN-based model designed and pretrained specifically for graph node-level tasks. Following the PFN framework, we first design a prior distribution of synthetic attributed graphs by using a novel combination of multi-level stochastic block models and a preferential attachment process for structure generation and graph-aware structured causal models for attribute generation. Then, we augment the tabular foundation model LimiX with attention-based graph neighborhood aggregation layers and train it on millions of synthetic graphs sampled from our prior. On diverse real-world graph datasets with node-level tasks, GraphPFN achieves state-of-the-art results in both in-context learning and finetuning regimes, outperforming G2T-FM, prior GFMs, and task-specific GNNs trained from scratch. More broadly, GraphPFN shows the potential of PFN-based models for building graph foundation models.",
+   "authors": [
+    "Dmitry Eremeev",
+    "Oleg Platonov",
+    "Gleb Bazhenov",
+    "Artem Babenko",
+    "Liudmila Prokhorenkova"
+   ],
+   "categories": [
+    "cs.LG"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-08-20",
+   "updated": "2026-08-21",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2509.21489",
+   "rated_at": "2026-09-19"
+  },
+  {
+   "id": "2602.09489",
+   "title": "Computing Conditional Shapley Values Using Tabular Foundation Models",
+   "abstract": "Shapley values have become a cornerstone of explainable AI, but they are computationally expensive to use, especially when features are dependent. Evaluating them requires approximating a large number of conditional expectations, either via Monte Carlo integration or regression. Until recently it has not been possible to fully exploit deep learning for the regression approach, because retraining for each conditional expectation takes too long. Tabular foundation models such as TabPFN overcome this computational hurdle by leveraging in-context learning, so each conditional expectation can be approximated without any re-training. In this paper, we compute Shapley values with multiple variants of TabPFN and compare their performance with state-of-the-art methods on both simulated and real datasets. In most cases, TabPFN yields the best performance; where it does not, it is only marginally worse than the best method, at a fraction of the runtime. We discuss further improvements and how tabular foundation models can be better adapted specifically for conditional Shapley value estimation.",
+   "authors": [
+    "Lars Henry Berge Olsen",
+    "Dennis Christensen"
+   ],
+   "categories": [
+    "cs.AI"
+   ],
+   "primary": "cs.AI",
+   "created": "2026-02-10",
+   "updated": "2026-02-11",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2602.09489",
+   "rated_at": "2026-09-20"
+  },
+  {
+   "id": "2605.15488",
+   "title": "SurvivalPFN: Amortizing Survival Prediction via In-Context Bayesian Inference",
+   "abstract": "Survival analysis provides a powerful statistical framework for modeling time-to-event outcomes in the presence of censoring. However, selecting an appropriate estimator from the many specialized survival approaches often requires substantial methodological and domain expertise. We introduce SurvivalPFN, a prior-data fitted network that amortizes Bayesian inference for censored observations through in-context learning. SurvivalPFN is pretrained on a diverse family of synthetic, identifiable, and right-censored data-generating processes, enabling it to amortize survival analysis in a single forward pass during inference. As a result, the model adapts to the effective complexity of each dataset without task-specific training or hyperparameter tuning, avoids restrictive parametric assumptions, and produces calibrated survival distributions. In a large-scale benchmark spanning 61 datasets, 21 methods, and 5 evaluation metrics, SurvivalPFN achieves strong predictive performance and often improves upon established survival models. These results suggest that SurvivalPFN offers a principled and practical foundation model for survival analysis, with potential applications in high-impact domains such as healthcare, finance, and engineering (https://github.com/rgklab/SurvivalPFN).",
+   "authors": [
+    "Shi-ang Qi",
+    "Vahid Balazadeh",
+    "Michael Cooper",
+    "Russell Greiner",
+    "Rahul G. Krishnan"
+   ],
+   "categories": [
+    "cs.LG",
+    "stat.ML"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-05-15",
+   "updated": "2026-05-18",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by-nc-sa/4.0/",
+   "url": "https://arxiv.org/abs/2605.15488",
+   "rated_at": "2026-09-21"
+  },
+  {
+   "id": "2603.29475",
+   "title": "Survival In-Context: Amortized Bayesian Survival Analysis via Prior-Fitted Networks",
+   "abstract": "Survival analysis is crucial for many medical applications, but remains challenging for modern machine learning due to limited data, censoring, and the heterogeneity of tabular covariates. While the prior-fitted paradigm, which relies on pretraining models on large collections of synthetic datasets, has recently facilitated tabular foundation models for classification and regression, its suitability for time-to-event modeling remains unclear. We propose a flexible survival data generation framework that defines a rich survival prior with explicit control over covariates and time-event distributions. Building on this prior, we introduce Survival In-Context (SIC), a prior-fitted in-context learning model for survival analysis that is pretrained exclusively on synthetic data. SIC is trained to approximate Bayesian posterior predictive inference under the synthetic survival prior, enabling individualized survival prediction in a single forward pass, requiring no task-specific training or hyperparameter tuning. Across a broad evaluation on real-world survival datasets, SIC achieves competitive or superior performance compared to classical and deep survival models, particularly in small and medium-sized data regimes, highlighting the promise of a prior-fitted paradigm for survival analysis. The code and pretrained models will be made available upon publication.",
+   "authors": [
+    "Dmitrii Seletkov",
+    "Paul Hager",
+    "Georgios Kaissis",
+    "Rickmer Braren",
+    "Daniel Rueckert",
+    "Raphael Rehms"
+   ],
+   "categories": [
+    "cs.LG"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-05-13",
+   "updated": "2026-05-14",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2603.29475",
+   "rated_at": "2026-09-22"
+  },
+  {
+   "id": "2505.20685",
+   "title": "GIT-BO: High-Dimensional Bayesian Optimization with Tabular Foundation Models",
+   "abstract": "Bayesian optimization (BO) struggles in high dimensions, where Gaussian-process surrogates demand heavy retraining and brittle assumptions, slowing progress on real engineering and design problems. We introduce GIT-BO, a Gradient-Informed BO framework that couples TabPFN v2, a tabular foundation model that performs zero-shot Bayesian inference in context, with an active-subspace mechanism computed from the model's own predictive-mean gradients. This aligns exploration to an intrinsic low-dimensional subspace via a Fisher-information estimate and selects queries with a UCB acquisition, requiring no online retraining. Across 60 problem variants spanning 20 benchmarks-nine scalable synthetic families and ten real-world tasks (e.g., power systems, Rover, MOPTA08, Mazda)-up to 500 dimensions, GIT-BO delivers a stronger performance-time trade-off than state-of-the-art GP-based methods (SAASBO, TuRBO, Vanilla BO, BAxUS), ranking highest in performance and with runtime advantages that grow with dimensionality. Limitations include memory footprint and dependence on the capacity of the underlying TFM.",
+   "authors": [
+    "Rosen Ting-Ying Yu",
+    "Cyril Picard",
+    "Faez Ahmed"
+   ],
+   "categories": [
+    "cs.CE"
+   ],
+   "primary": "cs.CE",
+   "created": "2026-03-05",
+   "updated": "2026-03-06",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2505.20685",
+   "rated_at": "2026-09-23"
+  },
+  {
+   "id": "2509.11259",
+   "title": "ICR-RL: Deep Reinforcement Learning via In-Context Regression",
+   "abstract": "Recent advancements in machine learning have largely been driven by foundation models (FMs) trained on large, diverse datasets, enabling them to generalize effectively to new, related tasks. However, extending this paradigm to reinforcement learning (RL), where an agent interacts with an environment to select actions, remains a significant challenge. Most existing approaches train FMs directly on sets of control tasks, but developing diverse RL environments and scaling training across them can be costly and complex. In this study, we explore a simpler alternative approach based on a classical reduction from RL to regression. We demonstrate that a foundation model pre-trained for regression tasks, when used as an in-context regression (ICR) model, can be directly applied to RL problems. Building on this insight, we introduce a gradient-free method, ICR-RL, that requires no additional training and leverages an ICR foundation model to tackle RL tasks. We evaluate our approach by applying the ICR model with the recently proposed TabPFN, which is trained on a wide range of regression tasks. Experiments conducted on the Gymnasium classic-control benchmark indicate that ICR-RL can compete with commonly used methods, including DQN, PPO and TRPO. These results show that ICR foundation models can effectively solve RL tasks without fine-tuning, demonstrating their potential as a foundation for RL-oriented models.",
+   "authors": [
+    "David Schiff",
+    "Ofir Lindenbaum",
+    "Yonathan Efroni"
+   ],
+   "categories": [
+    "cs.LG",
+    "cs.AI"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-07-06",
+   "updated": "2026-07-07",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2509.11259",
+   "rated_at": "2026-09-24"
+  },
+  {
+   "id": "2603.29928",
+   "title": "ScoringBench: A Benchmark for Evaluating Tabular Foundation Models with Proper Scoring Rules",
+   "abstract": "Tabular foundation models such as TabPFN and TabICL already produce full predictive distributions, yet prevailing regression benchmarks evaluate them almost exclusively via point-estimate metrics (RMSE, $R^2$). This discards precisely the distributional information these models are designed to provide - a critical gap for high-stakes domains where not all kinds of errors are equally costly. We introduce ScoringBench, an open and extensible benchmark that evaluates tabular regression models under a comprehensive suite of proper scoring rules - including CRPS, CRLS, interval score, energy score, and weighted CRPS - alongside standard point metrics. ScoringBench covers 97 regression datasets from diverse domains, supports transparent community contributions via a git-based leaderboard, and provides two complementary ranking protocols: an ordinal Demsar/autorank approach and a magnitude-preserving z-score ranking approach. Evaluating several models - spanning in-context learners, fine-tuned foundation models, gradient-boosted trees, and MLPs - we find that model rankings shift substantially depending on the scoring rule: models that excel on point-estimate metrics can rank poorly on probabilistic ones, and the top-performing model under one proper scoring rule may rank noticeably lower under another. These results demonstrate that the choice of evaluation metric is not a technicality but a modelling decision - and, for applications where e.g. tail errors are disproportionately costly, a domain-specific requirement with direct consequences for model deployment.",
+   "authors": [
+    "Jonas Landsgesell",
+    "Pascal Knoll",
+    "Tizian Wenzel"
+   ],
+   "categories": [
+    "cs.AI"
+   ],
+   "primary": "cs.AI",
+   "created": "2026-05-04",
+   "updated": "2026-05-05",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by-sa/4.0/",
+   "url": "https://arxiv.org/abs/2603.29928",
+   "rated_at": "2026-09-05"
+  },
+  {
+   "id": "2608.01400",
+   "title": "TabDPT-Turbo: Efficient In-Context Learning for Tabular Prediction",
+   "abstract": "Tabular foundation models, driven by in-context learning, have rapidly grown in quality and popularity. However, recent approaches with either cell-based architectures or retrieval have sacrificed efficiency for raw performance, restricting their utility in situations where compute is limited or inference speed is crucial. We adopt an alternate approach, sticking with row-based attention while incorporating long context pre-training to eliminate the need for retrieval. By combining this with architectural improvements and SSL pre-training on a newly-sourced, larger corpus of real data results, we present TabDPT-Turbo, a model that provides comparable default performance to TabDPT v1.1 on TabArena-Lite, CC18, and CTR23, at orders of magnitude faster. In our experiments, TabDPT-Turbo is the fastest model overall among leading foundation models. We have released the new model as TabDPT v1.2 at https://github.com/layer6ai-labs/TabDPT-inference.",
+   "authors": [
+    "Rasa Hosseinzadeh",
+    "Alex Labach",
+    "Zexin Xue",
+    "Shuyi Han",
+    "Valentin Thomas",
+    "Anthony L. Caterini"
+   ],
+   "categories": [
+    "cs.LG",
+    "cs.AI"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-08-25",
+   "updated": "2026-08-26",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2608.01400",
+   "rated_at": "2026-09-06"
+  },
+  {
+   "id": "2608.25774",
+   "title": "EXAONE Tabular 1.0 : Technical Report",
+   "abstract": "EXAONE Tabular is a compact tabular foundation model family for classification and regression via in-context learning, producing predictions without dataset-specific gradient updates. Pretrained exclusively on a synthetic structural-causal-model (SCM) prior, its central contribution is an architecture-centered redesign of tabular in-context learning. Rather than compressing features into a fixed row embedding before a separate row-level learner, EXAONE Tabular interleaves feature-axis attention within each item with support-conditioned item-axis attention within each feature at every Transformer layer, mediated by item-summary and feature-summary tokens. Across four public benchmarks, EXAONE Tabular combines strong predictive performance with high efficiency. On TabArena, its 20.81M-parameter classification model ranks first overall, surpassing tuned ensembles and 4-hour AutoML pipelines, while regression reaches the performance regime of the 1.64B-parameter TabFM at roughly 1/11 the inference cost. On BCCO and TALENT, EXAONE Tabular ranks second in classification and first in regression. On ScoringBench, it achieves the best mean rank for both point-estimation and predictive-distribution quality, leading the $R^2$, RMSE, and CRPS evaluations. Together, these results establish EXAONE Tabular as a state-of-the-art compact tabular foundation model family, combining strong predictive performance across classification, point regression, and probabilistic regression with an efficient model design.",
+   "authors": [
+    "Moonjung Eo",
+    "Min-Kook Suh",
+    "Hye-Seung Cho",
+    "Jiwon Kim",
+    "Seoyoon Kim",
+    "Sangjun Nam",
+    "Soonyoung Lee"
+   ],
+   "categories": [
+    "cs.LG"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-08-26",
+   "updated": "2026-08-27",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+   "url": "https://arxiv.org/abs/2608.25774",
+   "rated_at": "2026-09-07"
+  },
+  {
+   "id": "2609.13031",
+   "title": "Attention Quantization for Tabular Foundation Models",
+   "abstract": "With the recent rise and adoption of tabular foundation models, optimizing their inference performance becomes an emerging field for efficiency research. While the models are architecturally similar to transformer-based large language models (LLMs), the size and serving patterns differ significantly. We show that the focus should be on the attention calculation and less on weight or KV cache quantization, which are more popular in LLMs. We develop a quantization strategy for queries, keys, and values to FP8 and use explicit FP8 matrix multiplication instructions to speed up the attention calculation. We find that it is crucial to align the quantization error in the test rows with the quantization error in the training rows, as otherwise the accuracy drops drastically. Our Triton kernel achieves a speedup up to 1.7x over regular 16-bit kernels, and we show that on TabPFN-v3 and TabICLv2 there is no relevant accuracy loss across TabArena and BeyondArena.",
+   "authors": [
+    "Jonas M. K\u00fcbler",
+    "Benjamin J\u00e4ger",
+    "Klemens Fl\u00f6ge",
+    "Noah Hollmann",
+    "Frank Hutter"
+   ],
+   "categories": [
+    "cs.LG",
+    "cs.AI"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-09-11",
+   "updated": "2026-09-14",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2609.13031",
+   "rated_at": "2026-09-12"
+  },
+  {
+   "id": "2407.20060",
+   "title": "RelBench: A Benchmark for Deep Learning on Relational Databases",
+   "abstract": "We present RelBench, a public benchmark for solving predictive tasks over relational databases with graph neural networks. RelBench provides databases and tasks spanning diverse domains and scales, and is intended to be a foundational infrastructure for future research. We use RelBench to conduct the first comprehensive study of Relational Deep Learning (RDL) (Fey et al., 2024), which combines graph neural network predictive models with (deep) tabular models that extract initial entity-level representations from raw tables. End-to-end learned RDL models fully exploit the predictive signal encoded in primary-foreign key links, marking a significant shift away from the dominant paradigm of manual feature engineering combined with tabular models. To thoroughly evaluate RDL against this prior gold-standard, we conduct an in-depth user study where an experienced data scientist manually engineers features for each task. In this study, RDL learns better models whilst reducing human work needed by more than an order of magnitude. This demonstrates the power of deep learning for solving predictive tasks over relational databases, opening up many new research opportunities enabled by RelBench.",
+   "authors": [
+    "Joshua Robinson",
+    "Rishabh Ranjan",
+    "Weihua Hu",
+    "Kexin Huang",
+    "Jiaqi Han",
+    "Alejandro Dobles",
+    "Matthias Fey",
+    "Jan E. Lenssen",
+    "Yiwen Yuan",
+    "Zecheng Zhang",
+    "Xinwei He",
+    "Jure Leskovec"
+   ],
+   "categories": [
+    "cs.LG",
+    "cs.AI",
+    "cs.DB"
+   ],
+   "primary": "cs.LG",
+   "created": "2024-07-29",
+   "updated": "2024-07-30",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2407.20060",
+   "rated_at": "2026-09-09"
+  },
+  {
+   "id": "2510.06377",
+   "title": "Relational Transformer: Toward Zero-Shot Foundation Models for Relational Data",
+   "abstract": "Pretrained transformers readily adapt to new sequence modeling tasks via zero-shot prompting, but relational domains still lack architectures that transfer across datasets and tasks. The core challenge is the diversity of relational data, with varying heterogeneous schemas, graph structures and functional dependencies. In this paper, we present the Relational Transformer (RT) architecture, which can be pretrained on diverse relational databases and directly applied to unseen datasets and tasks without task- or dataset-specific fine-tuning, or retrieval of in-context examples. RT (i) incorporates task specification via task table prompting, (ii) tokenizes cells with table/column metadata, (iii) is pretrained via masked token prediction, and (iv) utilizes a novel Relational Attention mechanism over columns, rows, and primary-foreign key links. Pretrained on RelBench datasets spanning tasks such as churn and sales forecasting, RT attains strong zero-shot performance, averaging 93% of fully supervised AUROC on binary classification tasks with a single forward pass of a 22M parameter model, as opposed to 84% for a 27B LLM. Fine-tuning yields state-of-the-art results with high sample efficiency. Our experimental analyses show that RT's zero-shot transfer leverages task context, relational attention patterns and schema semantics. Overall, RT provides a practical path toward foundation models for relational data. Code, models, data: https://github.com/snap-stanford/relational-transformer.",
+   "authors": [
+    "Rishabh Ranjan",
+    "Valter Hudovernik",
+    "Mark Znidar",
+    "Charilaos Kanatsoulis",
+    "Roshan Upendra",
+    "Mahmoud Mohammadi",
+    "Joe Meyer",
+    "Tom Palczewski",
+    "Carlos Guestrin",
+    "Jure Leskovec"
+   ],
+   "categories": [
+    "cs.LG",
+    "cs.AI",
+    "cs.DB"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-03-02",
+   "updated": "2026-03-03",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2510.06377",
+   "rated_at": "2026-09-10"
+  },
+  {
+   "id": "2602.04029",
+   "title": "PluRel: Synthetic Data unlocks Scaling Laws for Relational Foundation Models",
+   "abstract": "Relational Foundation Models (RFMs) facilitate data-driven decision-making by learning from complex multi-table databases. However, the diverse relational databases needed to train such models are rarely public due to privacy constraints. While there are methods to generate synthetic tabular data of arbitrary size, incorporating schema structure and primary-foreign key connectivity for multi-table generation remains challenging. Here we introduce PLUREL, a framework to synthesize multi-tabular relational databases from scratch. In a step-by-step fashion, PLUREL models (1) schemas with directed graphs, (2) inter-table primary-foreign key connectivity with bipartite graphs, and, (3) feature distributions in tables via conditional causal mechanisms. The design space across these stages supports the synthesis of a wide range of diverse databases, while being computationally lightweight. Using PLUREL, we observe for the first time that (1) RFM pretraining loss exhibits power-law scaling with the number of synthetic databases and total pretraining tokens, (2) scaling the number of synthetic databases improves generalization to real databases, and (3) synthetic pretraining yields strong base models for continued pretraining on real databases. Overall, our framework and results position synthetic data scaling as a promising paradigm for RFMs.",
+   "authors": [
+    "Vignesh Kothapalli",
+    "Rishabh Ranjan",
+    "Valter Hudovernik",
+    "Vijay Prakash Dwivedi",
+    "Johannes Hoffart",
+    "Carlos Guestrin",
+    "Jure Leskovec"
+   ],
+   "categories": [
+    "cs.DB",
+    "cs.AI",
+    "cs.LG"
+   ],
+   "primary": "cs.DB",
+   "created": "2026-07-14",
+   "updated": "2026-08-04",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2602.04029",
+   "rated_at": "2026-09-11"
+  },
+  {
+   "id": "2003.06505",
+   "title": "AutoGluon-Tabular: Robust and Accurate AutoML for Structured Data",
+   "abstract": "We introduce AutoGluon-Tabular, an open-source AutoML framework that requires only a single line of Python to train highly accurate machine learning models on an unprocessed tabular dataset such as a CSV file. Unlike existing AutoML frameworks that primarily focus on model/hyperparameter selection, AutoGluon-Tabular succeeds by ensembling multiple models and stacking them in multiple layers. Experiments reveal that our multi-layer combination of many models offers better use of allocated training time than seeking out the best. A second contribution is an extensive evaluation of public and commercial AutoML platforms including TPOT, H2O, AutoWEKA, auto-sklearn, AutoGluon, and Google AutoML Tables. Tests on a suite of 50 classification and regression tasks from Kaggle and the OpenML AutoML Benchmark reveal that AutoGluon is faster, more robust, and much more accurate. We find that AutoGluon often even outperforms the best-in-hindsight combination of all of its competitors. In two popular Kaggle competitions, AutoGluon beat 99% of the participating data scientists after merely 4h of training on the raw data.",
+   "authors": [
+    "Nick Erickson",
+    "Jonas Mueller",
+    "Alexander Shirkov",
+    "Hang Zhang",
+    "Pedro Larroy",
+    "Mu Li",
+    "Alexander Smola"
+   ],
+   "categories": [
+    "stat.ML",
+    "cs.LG"
+   ],
+   "primary": "stat.ML",
+   "created": "2020-03-13",
+   "updated": "2020-03-17",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2003.06505",
+   "rated_at": "2026-09-12"
+  },
+  {
+   "id": "2603.27385",
+   "title": "Active In-Context Learning for Tabular Foundation Models",
+   "abstract": "Active learning (AL) reduces labeling cost by querying informative samples, but in tabular settings its cold-start gains are often limited because uncertainty estimates are unreliable when models are trained on very few labels. Tabular foundation models such as TabPFN provide calibrated probabilistic predictions via in-context learning (ICL), i.e., without task-specific weight updates, enabling an AL regime in which the labeled context - rather than parameters - is iteratively optimized. We formalize Tabular Active In-Context Learning (Tab-AICL) and instantiate it with four acquisition rules: uncertainty (TabPFN-Margin), diversity (TabPFN-Coreset), an uncertainty-diversity hybrid (TabPFN-Hybrid), and a scalable two-stage method (TabPFN-Proxy-Hybrid) that shortlists candidates using a lightweight linear proxy before TabPFN-based selection. Across 20 classification benchmarks, Tab-AICL improves cold-start sample efficiency over retrained gradient-boosting baselines (CatBoost-Margin and XGBoost-Margin), measured by normalized AULC up to 100 labeled samples.",
+   "authors": [
+    "Wilailuck Treerath",
+    "Fabrizio Pittorino"
+   ],
+   "categories": [
+    "cs.LG"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-03-28",
+   "updated": "2026-03-31",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2603.27385",
+   "rated_at": "2026-09-13"
+  }
+ ],
+ "dislikes": [
+  {
+   "id": "2605.29751",
+   "title": "DySem: Uncovering Dynamic Semantic Components of Large Language Models for Calculating Semantic Textual Similarity",
+   "abstract": "Calculating semantic textual similarity is a foundational task in natural language processing. Current large language models (LLMs) based methods typically rely on extracting last-layer hidden states with fixed dimensions to compute similarity for every text pairs. We argue that this paradigm is suffer from two limitations: (i) The last hidden layer encodes more general knowledge rather than just semantic knowledge, making it suboptimal for semantic similarity computation; (ii) The hidden layer dimensions of LLMs are generally very large, which introduces some redundancy and noise for representing semantics. In this work, we propose DySem, a novel training-free framework that investigates more semantic-related internal components of LLMs via multilingual consensus, and shifts away from static representation spaces in favor of dynamic, sample-specific semantic dimensions by constructing text-dependent joint semantic set and computes similarity over this shared dimensional subset. Extensive experiments across various LLMs show that our method consistently outperforms recent baselines while maintaining lower dimensions for similarity calculation. The code is released at https://github.com/szu-tera/DySem.",
+   "authors": [
+    "Kaijie Zheng",
+    "Weiqin Wang",
+    "Yile Wang",
+    "Hui Huang"
+   ],
+   "categories": [
+    "cs.CL"
+   ],
+   "primary": "cs.CL",
+   "created": "2026-09-28",
+   "updated": "2026-09-29",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2605.29751",
+   "rated_at": "2026-09-29"
+  },
+  {
+   "id": "2609.39572",
+   "title": "Compact Language, Complex Model Shifts: How and Where Ambiguity and Underspecification Affect LLMs",
+   "abstract": "We analyze how lexical ambiguity and underspecification affect language model training. We create artificial homonyms and artificial hypernyms as pseudowords and analyze the generative performance of language models as they are trained with increasing amounts of these ambiguous or underspecified pseudoword types. We further analyze whether the models disambiguate ambiguous or underspecified statements and provide a first mechanistic account of how ambiguity and disambiguation are represented internally. Our main results show that both ambiguity and underspecification increase model performance in ways that scale with their influence on the language's type-token ratio. However, the accuracy of generating sequences containing ambiguous words or their synonyms decreases compared to other texts. We also show that internal representations of pseudowords reflect disambiguation of pseudo-homonyms, but underspecification of pseudo-hypernyms is maintained during the generative process.",
+   "authors": [
+    "Michaela Regneri",
+    "Nina Scheller",
+    "S\u00f6ren Laue"
+   ],
+   "categories": [
+    "cs.CL"
+   ],
+   "primary": "cs.CL",
+   "created": "2026-09-30",
+   "updated": "2026-10-01",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2609.39572",
+   "rated_at": "2026-10-02"
+  },
+  {
+   "id": "2602.08826",
+   "title": "Affective Flow Language Model for Emotional Support Conversation",
+   "abstract": "Large language models (LLMs) have advanced emotional support conversation, but existing alignment methods rely mainly on sparse preferences at the response level or outcomes at the dialogue level, providing limited supervision for sequential strategy decisions in multi-turn interactions. This raises a key question: how can detailed process signals be derived from overall dialogue outcomes to guide the gradual adaptation of support strategies? We propose the Affective Flow Language Model (AFlow), which models multi-turn emotional support as an affective utility flow evolving along dialogue trajectories. AFlow searches diverse support trajectories and estimates the utility of intermediate dialogue states and candidate strategies. It further introduces Affective Flow Preference Optimization (AFPO), which uses a flow-balance objective defined over dialogue subpaths to propagate downstream preference signals to intermediate states and learn strategy transitions consistent with support outcomes over the full dialogue. AFlow introduces flow-balance learning into multi-turn affective interaction, providing a process-based approach to dynamic affect modeling and continuous strategy optimization. Experiments on ExTES and ESConv show consistent improvements in strategy alignment, response diversity, and generation quality across different model environments and evaluation settings. Our code is available at https://github.com/chz2025/AffectiveFlow.",
+   "authors": [
+    "Chenghui Zou",
+    "Ning Wang",
+    "Tiesunlong Shen",
+    "Luwei Xiao",
+    "Chuan Ma",
+    "Xiangpeng Li",
+    "Rui Mao",
+    "Erik Cambria"
+   ],
+   "categories": [
+    "cs.CL",
+    "cs.AI"
+   ],
+   "primary": "cs.CL",
+   "created": "2026-09-25",
+   "updated": "2026-09-28",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2602.08826",
+   "rated_at": "2026-09-28"
+  },
+  {
+   "id": "2609.29349",
+   "title": "ArGuard Shared Task: Harmful Content Detection in Arabic Memes and LLM Prompts",
+   "abstract": "ArGuard is a shared task on harmful content detection in Arabic memes and LLM prompts. It includes two tracks: Track A focuses on multimodal hate detection in Arabic memes, while Track B addresses harmful prompt detection for Arabic LLM safety evaluation. In total, 58 teams registered, 35 participated in the final evaluation, and 27 submitted system-description papers. Participating teams explored models such as AraBERT, Jais, and Qwen3-VL. The best systems achieved macro-F1 scores of 0.823 on A1, 0.419 on A2, 0.984 on B1, and 0.790 on B2. Fine-grained meme classification in A2 was the most challenging setting, partly due to sparse labels and train-test distribution shifts.",
+   "authors": [
+    "Firoj Alam",
+    "Md. Rafiul Biswas",
+    "Mohamed Bayan Kmainasi",
+    "Ali Ezzat Shahroor",
+    "Hamdy Mubarak",
+    "George Mikros",
+    "Abul Hasnat",
+    "Wajdi Zaghouani"
+   ],
+   "categories": [
+    "cs.CL",
+    "cs.AI"
+   ],
+   "primary": "cs.CL",
+   "created": "2026-09-25",
+   "updated": "2026-09-28",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2609.29349",
+   "rated_at": "2026-09-26"
+  },
+  {
+   "id": "2605.23497",
+   "title": "Asking For An Old Friend: Diagnosing and Mitigating Temporal Failure Modes in LLM-based Statutory Question Answering",
+   "abstract": "Large language models are increasingly used for legal research, yet their fixed training cutoffs and reliance on static parametric knowledge are at odds with the evolving nature of statutory law. We study two temporal failure modes: post-cutoff staleness, where models apply superseded rules after legislative amendments, and recency bias, where models prefer newer provisions even when a historical version governs the fact pattern. To this end, we present a benchmark of 312 expert-validated, time-sensitive German statutory QA pairs spanning three categories: Post-Cutoff Amendment Questions, Pre-Amendment Questions, and Multi-Provision Pre-Amendment Questions. We evaluate five LLMs by OpenAI, Anthropic and DeepSeek under four inference settings: Vanilla, Web-search, and two retrieval-augmented variants that enforce temporal validity via a fact date extraction and version filtering. Using an LLM-as-a-judge validated against human expert ratings, we find severe degradation in the Vanilla post-cutoff setting. Both RAG approaches substantially improve performance across all question types, while web search yields unstable gains and exhibits a marked recency bias on historically anchored tasks. Our results indicate that reliable legal QA requires treating temporal validity as a hard constraint.",
+   "authors": [
+    "Max Prior",
+    "Andreas Schultz",
+    "Matthias Grabmair"
+   ],
+   "categories": [
+    "cs.CL"
+   ],
+   "primary": "cs.CL",
+   "created": "2026-09-25",
+   "updated": "2026-09-28",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2605.23497",
+   "rated_at": "2026-09-27"
+  },
+  {
+   "id": "2609.37361",
+   "title": "SemOPT: Fixing Semantic Errors in LLM-based Optimization Modeling via Reward-Guided Search",
+   "abstract": "Operations research supports decision-making in domains such as energy, economics, and healthcare. Solving operations research problems typically begins with optimization modeling, which translates a natural-language problem description into executable solver code. LLMs offer a promising way to automate this process, but they remain prone to errors. In practice, these errors can be divided into two categories: syntactic errors refer to solver code that fails to run successfully or is judged infeasible by the solver; semantic errors refer to solver code that successfully returns an objective value but violates the intent of the original problem. Since semantic errors do not trigger runtime failures, they are difficult to detect and rectify. To address this problem, we introduce SemOPT, a semantic-guided framework for correcting LLM-based optimization models. SemOPT combines a semantic reward model that distinguishes faithful math models from plausible but incorrect ones with an adaptive correction system that applies hierarchical reward-guided search over the modeling space. Experiments on seven optimization modeling benchmarks show that SemOPT establishes a new state of the art and achieves an average 7.6% accuracy improvement over the strongest baseline on complex datasets.",
+   "authors": [
+    "Zetong Zhou",
+    "Wentao Zhang",
+    "Jingyuan Wang",
+    "Yifan Yang",
+    "Zizhuo Wang",
+    "Shixi Hu"
+   ],
+   "categories": [
+    "cs.CL"
+   ],
+   "primary": "cs.CL",
+   "created": "2026-09-29",
+   "updated": "2026-09-30",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2609.37361",
+   "rated_at": "2026-10-02"
+  },
+  {
+   "id": "2610.02039",
+   "title": "CARM: Cancellation-Aware Response Masking for LLM Reinforcement Learning",
+   "abstract": "Recent years have witnessed the rapid adoption of reinforcement learning (RL) in large language model (LLM) post-training, with substantial gains in mathematical reasoning and code generation. In practical systems, however, policy updates and differences between rollout and training engines can make sampled responses off-policy. Sequence-level masking addresses this mismatch by deciding whether an entire response should contribute to optimization. A common masking rule uses the length-normalized geometric mean of sampled token probability ratios. Its signed log-ratios can cancel across positions, concealing substantial bidirectional policy drift. We propose \\emph{Cancellation-Aware Response Masking} (CARM), a sequence-level mask that takes the absolute value of each token log-ratio before averaging, preventing opposing probability changes from canceling. We prove that accepted responses satisfy a joint bound on the fraction of sampled-token ratios outside a prescribed band and their mean log-distance beyond its boundaries. Experiments on mathematical reasoning and code generation show that CARM improves mean@16 averaged over AIME 2024/2025/2026 and BeyondAIME by up to $3.13$ percentage points over geometric-mean masking, and increases average pass@1 across four code benchmarks by $2.88$ points over the strongest evaluated baseline. These findings support CARM as a theoretically grounded and effective method for response-level off-policy control in LLM reinforcement learning.",
+   "authors": [
+    "Yafei Zhang",
+    "Songshuo Lu",
+    "Sicong Liao",
+    "Zhi Chen",
+    "Yaohua Tang"
+   ],
+   "categories": [
+    "cs.LG",
+    "cs.AI",
+    "cs.CL"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-10-01",
+   "updated": "2026-10-02",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by-sa/4.0/",
+   "url": "https://arxiv.org/abs/2610.02039",
+   "rated_at": "2026-10-02"
+  },
+  {
+   "id": "2609.39995",
+   "title": "Learning to Explain While Planning: Rule-Aligned Diffusion Planning for Autonomous Driving",
+   "abstract": "Diffusion planners exhibit strong capabilities in generating multimodal trajectories. However, existing methods primarily rely on expert demonstrations to fit trajectory distributions, learning statistical correlations among scenes, behaviors, and trajectories without explicitly modeling driving rules. In long-tail scenarios where expert data are scarce, the lack of behaviors to imitate may lead to trajectories that violate safety or compliance requirements. Moreover, their generation process lacks rule-level explanations, making it difficult to determine which rules drive trajectory adjustments, when they take effect, and how strongly they act, thereby limiting failure diagnosis, safety validation, and targeted improvement. To address these limitations, we propose the Rule-Aligned Diffusion Planner (RADP), which incorporates differentiable driving rules into the diffusion objective during training, turning rule knowledge into intrinsic behavioral principles beyond finite demonstrations. We further introduce Rule-Pressure Attribution (RPA), which constructs supervision signals from gradients of rule losses with respect to predicted trajectories and employs a lightweight attribution head to estimate the optimization pressure exerted by each rule online. To assess the closed-loop behavioral relevance of these attributions, we propose a temporal risk-alignment protocol that evaluates whether current rule pressures reflect corresponding risks during subsequent closed-loop execution. Experiments on nuPlan show that RADP improves closed-loop planning in challenging safety-critical scenarios, while RPA exhibits consistent temporal alignment with subsequent rule-specific risks, validating both intrinsic rule learning and rule-level interpretability.",
+   "authors": [
+    "Jiaxi Ye",
+    "Chunji Lv",
+    "Guoren Wang",
+    "Changsheng Li"
+   ],
+   "categories": [
+    "cs.LG"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-10-01",
+   "updated": "2026-10-02",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2609.39995",
+   "rated_at": "2026-10-02"
+  },
+  {
+   "id": "2610.01789",
+   "title": "iADD: Improving Alignment and Diversity in Diffusion Policy Optimization",
+   "abstract": "Reinforcement learning based post training of diffusion models, such as Denoising Diffusion Policy Optimization (DDPO), optimizes a reverse diffusion process under a reward function. However, current approaches to reward optimizations do so at the cost of diversity and quality. In this paper, we provide better tradeoffs through careful theoretical considerations and method design. We analyze the theoretical framework and mathematically demonstrate that \\emph{only-latter timestep} updates of diffusion model may be harmful for diversity contrary to the conclusions presented in a previous work. Additionally, we propose an incremental Feynman-Kac training based on strong theoretical foundations in order to achieve the best-yet alignment-diversity tradeoffs. We perform extensive experiments and compare our method against related diffusion policy optimization approaches in three different tasks and also provide strong ablations for each component, thus validating strong performance gains in both alignment and diversity.",
+   "authors": [
+    "Ashok Prasad Neupane",
+    "Saugat Adhikari",
+    "Pramish Paudel",
+    "Ajad Chhatkuli",
+    "Danda Pani Paudel"
+   ],
+   "categories": [
+    "cs.LG",
+    "cs.AI"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-10-01",
+   "updated": "2026-10-02",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2610.01789",
+   "rated_at": "2026-10-02"
+  },
+  {
+   "id": "2609.39859",
+   "title": "Fork-dLLM: Avoiding the Flexibility Trap in Diffusion Language Models",
+   "abstract": "Masked diffusion language models (dLLMs) have shown strong potential for faster inference through parallel token generation when combined with confidence-based samplers. However, recent work has shown that such methods can defer unmasking high-entropy fork positions at which multiple plausible continuations exist. This results in reduced generation diversity, as shown by worse pass@k scaling, and limits gains obtainable from RL post-training. To avoid this flexibility trap, prior work advocated for autoregressive (AR) sampling. Here, we show that discarding confidence-based sampling is unnecessary and, once inference cost is taken into account, wasteful. We first propose Fork-dLLM, a simple hybrid sampler that uses AR-style ordering only at uncertain fallback steps while retaining parallel generation otherwise. We then extend the same principle to post-training with ForkGRPO, which uses Fork-dLLM rollouts and applies the GRPO objective only at fallback steps, preserving exact policy-likelihood ratios while substantially reducing rollout and optimization cost. In our experiments, Fork-dLLM matches the strong pass@k scaling of AR sampling while being 2-3x more efficient, and ForkGRPO achieves downstream performance comparable to or better than AR-based GRPO baselines at a substantially lower training cost.",
+   "authors": [
+    "Stipe Frkovi\u0107",
+    "Metod Jazbec",
+    "Christian A. Naesseth"
+   ],
+   "categories": [
+    "cs.LG"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-09-30",
+   "updated": "2026-10-01",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2609.39859",
+   "rated_at": "2026-10-01"
+  },
+  {
+   "id": "2601.18510",
+   "title": "Just-In-Time Reinforcement Learning: Continual Learning in LLM Agents Without Gradient Updates",
+   "abstract": "While Large Language Model (LLM) agents excel at general tasks, they inherently struggle with continual adaptation due to the frozen weights after deployment. Conventional reinforcement learning (RL) offers a solution but incurs prohibitive computational costs and the risk of catastrophic forgetting. We introduce Just-In-Time Reinforcement Learning (JitRL), a training-free framework that enables test-time policy optimization without any gradient updates. JitRL maintains a dynamic, non-parametric memory of experiences and retrieves relevant trajectories to estimate action advantages on-the-fly. These estimates are then used to directly modulate the LLM's output logits. We theoretically prove that this additive update rule is the exact closed-form solution to the KL-constrained policy optimization objective. Extensive experiments on WebArena and Jericho demonstrate that JitRL establishes a new state-of-the-art among training-free methods. Crucially, JitRL outperforms the performance of computationally expensive fine-tuning methods (e.g., WebRL) while reducing monetary costs by over 30 times, offering a scalable path for continual learning agents. The code is available at https://github.com/liushiliushi/JitRL.",
+   "authors": [
+    "Yibo Li",
+    "Zijie Lin",
+    "Ailin Deng",
+    "Xuan Zhang",
+    "Yufei He",
+    "Shuo Ji",
+    "Tri Cao",
+    "Bryan Hooi"
+   ],
+   "categories": [
+    "cs.LG",
+    "cs.AI"
+   ],
+   "primary": "cs.LG",
+   "created": "2026-09-27",
+   "updated": "2026-09-29",
+   "doi": "",
+   "license": "http://creativecommons.org/licenses/by/4.0/",
+   "url": "https://arxiv.org/abs/2601.18510",
+   "rated_at": "2026-09-29"
+  },
+  {
+   "id": "2609.29240",
+   "title": "TOLA: Text-aware One-Step Latent Adaptation for Diffusion-based Text Image Super-Resolution",
+   "abstract": "Text image super-resolution (TSR) aims to recover visually faithful and readable text under unknown degradations. Existing diffusion-based methods typically rely on multi-step prediction of either the high-resolution image or its text prior, resulting in prohibitive computational cost and inference latency. More critically, an erroneous text prior may be repeatedly injected into the denoising process, causing image and text predictions to reinforce each other and progressively amplify an early recognition error into a sharp yet semantically incorrect character. To address these limitations, we propose TOLA, a Text-aware One-step Latent Adaptation framework without iterative image-text diffusion. TOLA consists of two key modules. First, a confidence-weighted text conditioning module constructs the semantic condition only once and suppresses unreliable OCR predictions before they contaminate image reconstruction. Second, a lightweight latent residual correction module explicitly estimates and corrects the structured residual errors to recover missing or distorted stroke details. Extensive experiments demonstrate our state-of-the-art performance across all evaluation metrics on both CTR-TSR-Test ($\\times 4$) and RealCE-200 benchmarks. It is worth noting that our TOLA consistently surpasses existing diffusion-based TSR methods by at least 2.72 dB in PSNR on CTR-TSR-Test.",
+   "authors": [
+    "Yike Xu",
+    "Yue Shi",
+    "Yong Guo",
+    "Jiezhang Cao"
+   ],
+   "categories": [
+    "cs.CV",
+    "cs.AI"
+   ],
+   "primary": "cs.CV",
+   "created": "2026-09-24",
+   "updated": "2026-09-25",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2609.29240",
+   "rated_at": "2026-09-27"
+  },
+  {
+   "id": "2609.38819",
+   "title": "Future Video Generation Better Aligns with the Human Visual Cortex than Observed Video",
+   "abstract": "Studying the alignment between the internal representations of vision models and the responses of the visual cortex to the same observed visual stimuli has enabled us to better understand human visual processing. However, studies so far have largely overlooked the fact that the human brain not only processes observed visual stimuli, but also predicts upcoming stimuli based on what has been observed. Accordingly, we hypothesize that internal representations for generating future video frames are better aligned with the predictive nature of human visual processing than representations of the observed video itself. To this end, we compare the alignment between human video-watching fMRI responses in the visual cortex and the internal representations from two types of video diffusion models, an autoregressive (AR) model and its non-AR base model. We first conduct a within-model analysis of the AR video diffusion model and show that the representations for future video generation align better with the visual cortex than the representations of the observed video. We then compare the internal representations of the AR model with those of its non-AR base model and again show that the representations for future video generation align better with the visual cortex than the representations for observed video reconstruction by the base model. Specifically, the alignment of observed video reconstruction is concentrated in lower-order visual cortex, whereas that of future video generation is concentrated in higher-order visual cortex. Finally, we show in a human behavioral experiment that humans prefer videos generated by amplifying the contributions of individual layers that align better with the visual cortex.",
+   "authors": [
+    "Chang-Bae Bang",
+    "Hyungjin Chung",
+    "Byung-Hoon Kim"
+   ],
+   "categories": [
+    "cs.CV",
+    "cs.AI",
+    "q-bio.NC"
+   ],
+   "primary": "cs.CV",
+   "created": "2026-09-30",
+   "updated": "2026-10-01",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2609.38819",
+   "rated_at": "2026-10-01"
+  },
+  {
+   "id": "2609.08512",
+   "title": "TASG-Explore: Traversability-Aware Sector-Guided Exploration for Ground Robot on Uneven Terrain",
+   "abstract": "Autonomous exploration on uneven terrain requires ground robots to balance exploration efficiency, coverage completeness, and terrain safety. Detailed tsrrain reasoning improves local reliability but can slow large-scale exploration, whereas coarse region guidance expands quickly in open areas but can miss narrow passages and irregular traversable boundaries. To address this challenge, this paper presents TASG-Explore, a traversability-aware sector-guided exploration framework for ground robots. The framework first performs hierarchical traversability analysis using variable-voxel ground fitting and adaptive 8-bit obstacle encoding. It then splitting cost map into sectors, incrementally updates sector clusters, extracts terrain-coupled frontier viewpoints, and maintains a dynamic topological roadmap with unknown topological hypotheses. Finally, a sector-guided planner selects region targets and inserts local viewpoints to generate efficient exploration routes. Benchmark experiments in diverse challenging environments, including caves, forests, and rugged hills, show that TASG-Explore achieves the best overall performance among six representative state-of-the-art planners. The proposed traversability analysis improves processing efficiency by 6.3 times while maintaining high accuracy, and the exploration planner improves exploration efficiency by 51% and increases coverage by up to 2.95 times in rugged hill scene. Large-scale real-world experiments further demonstrate the practical value of the proposed method.",
+   "authors": [
+    "Shaocong Wang",
+    "Shiliang Shao",
+    "Ting Wang",
+    "Guangjie Han",
+    "Lianqing Liu"
+   ],
+   "categories": [
+    "cs.RO"
+   ],
+   "primary": "cs.RO",
+   "created": "2026-09-29",
+   "updated": "2026-09-30",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2609.08512",
+   "rated_at": "2026-10-01"
+  },
+  {
+   "id": "2609.28766",
+   "title": "TAPESIM: Efficient Simulation of Adhesive Tape Dispensing for Robotic Manipulation",
+   "abstract": "Applying adhesive tape to secure wire harnesses or seal packages requires robots to coordinate a flexible strip, a moving roll, and surfaces that attach and detach. Simulation could make these interactions repeatable for robot development and evaluation, but resolving every adhesive layer is expensive and can suppress roll motion at practical solver tolerances, while a permanently rigid roll cannot release material. We present TapeSim, a tape simulator that concentrates deformation near the unwinding region and along the released strip. We will release the source code. A rigid cluster represents most wound material, while an advancing deformable collar enables payout and leaves released tape flexible and reattachable. Optional releasable bonds simplify adhesive interfaces and reduce mean step times for smaller rolls. Controlled swing tests show improved roll rotation. At 32 turns, clustering gives 3.2-3.4x mean physics-step speedups at a fixed Newton tolerance and 4.5-8.4x for comparable roll motion. Across five real-motion Stick replays, the clustered variants reduce mean image-plane core-landmark error by 23-29% relative to the full-shell cohesive baseline. On 100 paired Peel cases, they improve balanced accuracy from 50% to 72.9-76.3%, with interface rankings varying across tasks. A teleoperated box-sealing sequence demonstrates attachment, dispensing, cutting, and sealing in a continuous workflow.",
+   "authors": [
+    "Zhaofeng Luo",
+    "Xinyu Lu",
+    "Jaehoon Choi",
+    "Zhehuan Chen",
+    "Trinity Chung",
+    "Xiaowen Qiu",
+    "Hugh Nicholas Perkins",
+    "Gianna Calderon",
+    "Alexis Duburcq",
+    "Sanghyun Son",
+    "Tsun-Hsuan Wang",
+    "Yi-Ling Qiao",
+    "Minchen Li"
+   ],
+   "categories": [
+    "cs.RO",
+    "cs.GR"
+   ],
+   "primary": "cs.RO",
+   "created": "2026-09-28",
+   "updated": "2026-09-29",
+   "doi": "",
+   "license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "url": "https://arxiv.org/abs/2609.28766",
+   "rated_at": "2026-10-01"
+  }
+ ],
+ "hidden": []
+}

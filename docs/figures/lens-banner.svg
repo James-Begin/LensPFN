@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+  <title id="title">Lens — Find your next read. Right where you read.</title>
+  <desc id="desc">An arXiv reading companion powered by TabPFN-3.5 Fast, with a burgundy lens icon and a paper illustration.</desc>
+  <rect width="1200" height="320" rx="18" fill="#f7f4f3"/>
+  <rect x="0" y="0" width="9" height="320" fill="#8c2842"/>
+  <g fill="none" stroke="#8c2842" stroke-width="4" stroke-linecap="round">
+    <circle cx="72" cy="69" r="21"/><path d="m88 85 21 21 M72 58v22 M61 69h22"/>
+  </g>
+  <text x="121" y="88" font-family="Georgia,serif" font-weight="700" font-size="64" fill="#242329">Lens</text>
+  <text x="53" y="157" font-family="Georgia,serif" font-size="39" fill="#242329">Find your next read.</text>
+  <text x="53" y="203" font-family="Georgia,serif" font-size="39" fill="#242329">Right where you read.</text>
+  <text x="54" y="262" font-family="Arial,sans-serif" font-size="19" fill="#71656e">FOR arXiv</text>
+  <rect x="206" y="237" width="290" height="37" rx="18" fill="#8c2842"/>
+  <text x="351" y="262" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" fill="#fff">Powered by TabPFN-3.5 Fast</text>
+  <g transform="translate(855 35)">
+    <rect x="0" y="0" width="280" height="250" rx="12" fill="#fff" stroke="#dfd6db"/>
+    <rect x="0" y="0" width="280" height="42" rx="12" fill="#8c2842"/>
+    <rect x="0" y="27" width="280" height="15" fill="#8c2842"/>
+    <text x="20" y="28" font-family="Georgia,serif" font-size="21" font-weight="700" fill="#fff">Your next reads</text>
+    <g stroke="#ddd5da" stroke-width="5" stroke-linecap="round">
+      <path d="M22 72h178 M22 85h136 M22 103h93 M22 134h174 M22 147h147 M22 165h88 M22 196h162 M22 209h137 M22 227h92"/>
+    </g>
+    <g fill="none" stroke="#347054" stroke-width="2"><circle cx="243" cy="80" r="15"/><circle cx="243" cy="143" r="15"/><circle cx="243" cy="207" r="15"/></g>
+    <g fill="none" stroke="#347054" stroke-width="3" stroke-linecap="round"><path d="m237 80 4 5 8-10 m-12 68 4 5 8-10 m-12 74 4 5 8-10"/></g>
+  </g>
+</svg>

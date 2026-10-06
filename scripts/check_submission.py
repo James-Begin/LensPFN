@@ -1,0 +1,116 @@
+"""Check repository links, packaged extension files, and the hosted showcase link."""
+
+from __future__ import annotations
+
+from html import unescape
+import json
+from pathlib import Path
+import re
+import subprocess
+from urllib.parse import unquote, urlsplit
+import zipfile
+
+ROOT = Path(__file__).resolve().parents[1]
+errors = []
+paths = (
+    subprocess.check_output(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+        cwd=ROOT,
+    )
+    .decode()
+    .split("\0")
+)
+files = sorted({ROOT / path for path in paths if path and (ROOT / path).is_file()})
+
+
+def anchors(path):
+    seen = {}
+    result = set()
+    text = re.sub(r"```.*?```", "", path.read_text(), flags=re.S)
+    for heading in re.findall(r"^#{1,6}\s+(.+)$", text, flags=re.M):
+        heading = re.sub(r"<[^>]+>", "", unescape(heading)).strip().lower()
+        slug = re.sub(r"[^\w\- ]", "", heading).replace(" ", "-")
+        n = seen.get(slug, 0)
+        seen[slug] = n + 1
+        result.add(slug + (f"-{n}" if n else ""))
+    result.update(re.findall(r'(?:id|name)="([^"]+)"', text))
+    return result
+
+
+links = 0
+for path in files:
+    relative = path.relative_to(ROOT)
+    if any(
+        part.startswith((".lens-feed", ".cache", ".venv")) or part in {"node_modules", "artifacts"}
+        for part in relative.parts
+    ):
+        errors.append(f"Local-only file included: {relative}")
+    if path.name in {".env", "auth_token", "bridge-token", "profile.json"}:
+        errors.append(f"Private file included: {relative}")
+    if path.suffix in {".py", ".js", ".cjs", ".json", ".md", ".yml", ".toml"}:
+        # Report only filenames, never matching credential values.
+        if re.search(
+            r"tabpfn_sk_[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|"
+            r"-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----",
+            path.read_text(),
+        ):
+            errors.append(f"Possible credential in: {relative}")
+    if path.suffix != ".md":
+        continue
+    text = re.sub(r"```.*?```", "", path.read_text(), flags=re.S)
+    targets = re.findall(r"\]\(([^\s)]+)(?:\s+[^)]*)?\)", text)
+    targets += re.findall(r'(?:href|src)="([^"]+)"', text)
+    for target in targets:
+        url = urlsplit(unescape(target))
+        if url.scheme or url.netloc:
+            continue
+        linked = (path.parent / unquote(url.path)).resolve() if url.path else path
+        links += 1
+        if not linked.exists():
+            errors.append(f"Broken link in {relative}: {target}")
+        elif (
+            url.fragment and linked.suffix == ".md" and unquote(url.fragment) not in anchors(linked)
+        ):
+            errors.append(f"Unknown heading in {relative}: {target}")
+
+manifest = json.loads((ROOT / "lens/extension/manifest.json").read_text())
+source = ROOT / "lens/extension"
+assets = [
+    manifest["background"]["service_worker"],
+    manifest["side_panel"]["default_path"],
+]
+assets += [name for script in manifest["content_scripts"] for name in script["js"]]
+assets += list(manifest["icons"].values())
+package_version = re.search(
+    r'^version = "([^"]+)"$', (ROOT / "lens/pyproject.toml").read_text(), re.M
+).group(1)
+if package_version != manifest["version"]:
+    errors.append("Python package and extension versions differ.")
+expected = {
+    "extension/" + path.relative_to(source).as_posix()
+    for path in source.rglob("*")
+    if path.is_file()
+    and path.suffix in {".js", ".css", ".html", ".json", ".png", ".md"}
+    and not any(part.startswith(".") for part in path.relative_to(source).parts)
+}
+with zipfile.ZipFile(ROOT / "demo/lens-extension.zip") as archive:
+    if set(archive.namelist()) != expected or len(archive.namelist()) != len(expected):
+        errors.append("Extension package must contain every current asset exactly once.")
+    for name in archive.namelist():
+        original = source / Path(name).relative_to("extension")
+        if not original.is_file() or archive.read(name) != original.read_bytes():
+            errors.append(f"Extension package differs from source: {name}")
+    for name in assets:
+        if "extension/" + name not in archive.namelist():
+            errors.append(f"Manifest asset missing from extension package: {name}")
+
+readme = (ROOT / "README.md").read_text()
+if not re.search(r"^https://github\.com/user-attachments/assets/[0-9a-f-]+$", readme, re.M):
+    errors.append("README is missing a GitHub-hosted video attachment.")
+
+if errors:
+    print("\n".join(errors))
+    raise SystemExit(1)
+print(f"Checked {len(files)} public files and {links} local documentation links.")
+print(f"Extension {manifest['version']} matches source; README video attachment link present.")
+print("No local profile/cache paths or recognized credential patterns included.")
