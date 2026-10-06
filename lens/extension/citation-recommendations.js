@@ -1,6 +1,11 @@
 /* A complete scoring batch for this paper, using the shared citation queue. */
 (() => {
-  function create({prefetch,currentId,onResolved,onComplete}) {
+  function remaining(report, ratings=null) {
+    const unique=new Map((report.papers||[]).filter(row=>Number.isFinite(row.match)&&row.match>=0&&row.match<=1).map(row=>[row.paper.id,row]));
+    const unread=[...unique.values()].filter(row=>(ratings===null?(row.rating||0):ratings[row.paper.id]||0)===0);
+    return {expected:unread.reduce((sum,row)=>sum+row.match,0),unrated:unread.length,scored:unique.size,unavailable:report.unavailable||0,total:report.total||0,checked:report.checked??report.total??0};
+  }
+  function create({prefetch,currentId,onResolved,onComplete,onProgress=()=>{}}) {
     let generation=0;
     async function run(citations) {
       const current=++generation;
@@ -24,7 +29,17 @@
         })());
         return scoring.get(id);
       }
-      const results=await Promise.allSettled([...unique.values()].map(evaluate));
+      const finished=[];
+      const results=await Promise.allSettled([...unique.values()].map(async citation=>{
+        let result;
+        try {result=await evaluate(citation);} catch {result={unavailable:true};}
+        finished.push(result);
+        if(current===generation) {
+          const scored=new Map(finished.filter(row=>row.paper).map(row=>[row.paper.id,row]));
+          onProgress({papers:[...scored.values()],unavailable:finished.filter(row=>row.unavailable).length,total:unique.size,checked:finished.length});
+        }
+        return result;
+      }));
       if(current!==generation)return;
       const papers=new Map();let unavailable=0;
       for(const result of results) {
@@ -35,5 +50,5 @@
     }
     return {run,invalidate(){generation++;}};
   }
-  globalThis.LensCitationRecommendations={create};
+  globalThis.LensCitationRecommendations={create,remaining};
 })();

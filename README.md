@@ -63,7 +63,9 @@ Pair Lens with this companion’s new key. The helper leaves your normal reading
 | **Read a paper** | Hover or keyboard-focus HTML citations for the cited title, authors, abstract, and match estimate. Save without losing your place. |
 | **Follow an incomplete reference** | Resolve a DOI or title to the closest arXiv version automatically; retain bibliography details and a manual-link fallback. |
 | **Keep reading** | Prefetch citation matches on page open, prioritize the hovered citation, and reuse estimates until five rating changes. |
-| **Finish exploring citations** | See up to five top matched references once scoring completes, including papers you have not rated. |
+| **Finish exploring citations** | See top matched references and the expected number of remaining unrated references you may like, with scoring coverage. |
+| **Check for strong matches** | Opt into a quiet local Chrome digest above 80% match, and compare earlier forecasts with your later ratings. |
+| **Teach Lens what to look for** | Rate up to six varied papers in **Sharpen**, guided by model uncertainty after six ratings with at least two of each kind. |
 | **Refine your interests** | Watch the shortlist rerank with smooth movement and staggered arrivals; keep a Library of your ratings. |
 | **Start for the first time** | Follow guided setup, with explicit loading states, keyboard support, and reduced-motion behavior. |
 
@@ -121,7 +123,7 @@ Brier measures probability error; ECE measures calibration error. **Lower is bet
 
 Ratings, interests, and inference stay on your machine. The companion uses local model weights; configuring an access token verifies it with Prior Labs. Reference resolution sends public bibliography DOI/title/text to Semantic Scholar and DataCite. arXiv harvesting and first-use model downloads also require network access. [Data and access details](docs/PRIVACY.md).
 
-Lens currently requires a running local companion and an unpacked Chrome/Chromium extension. Citation previews work in arXiv HTML, and only references with an identifiable arXiv version can receive matches. Automatic reference matching can select the wrong version; inspect its title/source and use the manual-link fallback if needed. Match percentages estimate personal interest, not scientific quality or correctness. There is no background notification service or hosted demo account.
+Lens currently requires a running local companion and an unpacked Chrome/Chromium extension. Citation previews work in arXiv HTML, and only references with an identifiable arXiv version can receive matches. Automatic reference matching can select the wrong version; inspect its title/source and use the manual-link fallback if needed. Match percentages estimate personal interest, not scientific quality or correctness. Optional desktop alerts run locally through Chrome every 30 minutes while Chrome and the companion are running; there is no hosted notification service or demo account. Alerts use genuine match estimates strictly above 80%, never similarity scores. Sharpen is an uncertainty-and-diversity heuristic; faster cold-start learning has not yet been evaluated. [New feature details and limits](docs/research/releases/0.8.0.md).
 
 ## Project guide
 

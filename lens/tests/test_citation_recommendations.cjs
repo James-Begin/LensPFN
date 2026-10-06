@@ -4,6 +4,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
 const source=fs.readFileSync(path.join(__dirname,'../extension/citation-recommendations.js'),'utf8');
+function runtime(){const context={};vm.runInNewContext(source,context);return context.LensCitationRecommendations;}
 function make(prefetch,currentId='reading') {
   const context={};vm.runInNewContext(source,context);
   const reports=[],resolved=[];
@@ -60,4 +61,22 @@ test('a failed metadata request still waits for its outstanding score before com
   await tick();assert.equal(reports.length,0);
   release();await finished;
   assert.equal(reports[0].unavailable,1);
+});
+
+test('remaining references sum probabilities once and drop either kind of rating',()=>{
+  const {remaining}=runtime();
+  const rows=[{paper:{id:'a'},match:.9,rating:0},{paper:{id:'a'},match:.9,rating:0},{paper:{id:'b'},match:.6,rating:0},{paper:{id:'c'},match:.8,rating:1}];
+  const report={papers:rows,total:6,unavailable:2,checked:5};
+  assert.equal(remaining(report).expected,1.5);
+  const next=remaining(report,{a:1,b:-1});
+  assert.equal(next.unrated,1);assert.equal(next.expected,.8);assert.equal(next.scored,3);assert.equal(next.unavailable,2);assert.equal(next.checked,5);
+  assert.equal(remaining({...report,papers:[]}).expected,0);
+});
+
+test('progress publishes only the current batch and retains unresolved coverage',async()=>{
+  const reports=[];let first;
+  const prefetch={paper:id=>Promise.resolve({id,title:id}),match:id=>Promise.resolve({match:.75,rating:0}),resolve:()=>Promise.resolve({state:'unresolved'})};
+  const recommendations=runtime().create({prefetch,onResolved(){},onComplete:report=>{first=report;},onProgress:report=>reports.push(report)});
+  await recommendations.run([{id:'a',reference:'a'},{id:null,reference:'unknown'}]);
+  assert.equal(reports.length,2);assert.equal(reports.at(-1).checked,2);assert.equal(reports.at(-1).unavailable,1);assert.equal(first.total,2);
 });

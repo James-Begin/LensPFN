@@ -11,14 +11,14 @@
       .panel{background:#fff;border-radius:8px;box-shadow:0 8px 32px #24232930;max-height:min(620px,calc(100vh - 100px));overflow:auto;overscroll-behavior:contain;padding:20px;scrollbar-color:#bdb1b8 #fff}
       .heading{display:flex;gap:16px;align-items:flex-start}h2{font:23px/1.25 Georgia,"Times New Roman",serif;letter-spacing:-.02em;margin:0;text-wrap:pretty}p{margin:0}.context{margin-top:9px;color:var(--muted);font-size:12px}
       button{font:inherit;color:inherit;background:#fff;cursor:pointer;border:1px solid #c7bfc8;border-radius:6px;min-height:36px;padding:7px 10px}button:hover{background:#f9eef1;color:var(--accent)}button:disabled{opacity:.65;cursor:wait}button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-      .close{border:0;padding:0;flex:none;min-height:30px;width:30px;display:grid;place-items:center}.list{list-style:none;padding:0;margin:18px 0 0}.paper{padding:16px 0;border-top:1px solid #e3dce2}.paper:last-child{padding-bottom:0}.paper-top{display:flex;gap:14px;align-items:baseline}.title{font:18px/1.38 Georgia,"Times New Roman",serif;letter-spacing:-.01em;overflow-wrap:anywhere;color:inherit;text-decoration:none;text-underline-offset:3px}.title:hover{color:var(--accent);text-decoration:underline}.score{color:#3a654b;white-space:nowrap;font-size:12px;font-weight:650;font-variant-numeric:tabular-nums;margin-left:auto}.authors{font-size:12px;color:var(--muted);margin-top:6px}.actions{display:flex;gap:7px;margin-top:10px}.actions button{font-size:12px;font-weight:600}.save[aria-pressed=true]{background:#f9eef1;color:var(--accent);border-color:#b98698}.status{color:var(--muted);font-size:12px;margin-top:16px}.status:empty{display:none}
+      .close{border:0;padding:0;flex:none;min-height:30px;width:30px;display:grid;place-items:center}.list{list-style:none;padding:0;margin:18px 0 0}.paper{padding:16px 0;border-top:1px solid #e3dce2}.paper:last-child{padding-bottom:0}.paper-top{display:flex;gap:14px;align-items:baseline}.title{font:18px/1.38 Georgia,"Times New Roman",serif;letter-spacing:-.01em;overflow-wrap:anywhere;color:inherit;text-decoration:none;text-underline-offset:3px}.title:hover{color:var(--accent);text-decoration:underline}.score{color:#3a654b;white-space:nowrap;font-size:12px;font-weight:650;font-variant-numeric:tabular-nums;margin-left:auto}.authors{font-size:12px;color:var(--muted);margin-top:6px}.actions{display:flex;gap:7px;margin-top:10px}.actions button{font-size:12px;font-weight:600}.save[aria-pressed=true]{background:#f9eef1;color:var(--accent);border-color:#b98698}.status{color:var(--muted);font-size:12px;margin-top:16px}.status:empty{display:none}.remaining{font:19px/1.35 Georgia,"Times New Roman",serif;margin-top:15px;color:#3a654b;text-wrap:pretty}.coverage{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.6}
       .launcher{display:block;margin:10px 0 0 auto;background:#85283d;color:#fff;border:0;box-shadow:0 4px 16px #24232920;font-size:13px;font-weight:600}.launcher:hover{background:#6e2032;color:#fff}.launcher:focus-visible{outline-offset:4px}::selection{background:#eed4dc;color:#4e1725}
       @media(max-width:480px){:host{right:12px;bottom:12px}.panel{padding:18px;max-height:calc(100dvh - 90px)}h2{font-size:22px}}
     `);
     root.adoptedStyleSheets=[sheet];
     root.innerHTML=`<section class="panel" role="dialog" aria-labelledby="lens-top-heading" aria-describedby="lens-top-context" hidden>
       <div class="heading"><h2 id="lens-top-heading">Top matches in this paper</h2><button class="close" aria-label="Close top citation matches"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
-      <p class="context" id="lens-top-context"></p><ul class="list"></ul><p class="status" role="status"></p>
+      <p class="context" id="lens-top-context"></p><p class="remaining" aria-live="polite"></p><p class="coverage"></p><ul class="list"></ul><p class="status" role="status"></p>
       </section><button class="launcher" aria-expanded="false" aria-controls="lens-top-panel">Lens · Checking citations…</button>`;
     document.body.append(host);
     const $=selector=>root.querySelector(selector);
@@ -47,6 +47,13 @@
         button.setAttribute('aria-pressed',String(saved));button.textContent=saved?'Saved':'Interested';
         button.setAttribute('aria-label',`${saved?'Remove interest in':'Save'} ${button.dataset.title}`);
       }
+    }
+    function outlook(next, loading=false) {
+      const estimate=LensCitationRecommendations.remaining(next,ratings);
+      const expected=estimate.expected;
+      $('.remaining').textContent=estimate.unrated?(expected<.5?'Fewer than one more reference expected to match':`About ${Math.round(expected)} more ${Math.round(expected)===1?'reference':'references'} you may like`):estimate.scored?'You’ve rated every scored reference.':'No reference estimates are available yet.';
+      $('.coverage').textContent=`Expected total: ${expected.toFixed(1)} across ${estimate.unrated} unrated references. ${estimate.scored} scored${estimate.unavailable?` · ${estimate.unavailable} unavailable`:''}${loading?` · ${estimate.checked}/${estimate.total} checked`:''}. Estimates, not a guaranteed count.`;
+      $('.launcher').textContent=loading?`Lens · ${estimate.checked}/${estimate.total} references checked`:`Lens · Top citations · ~${Math.round(expected)} more`;
     }
     function render() {
       const focused=root.activeElement;
@@ -77,7 +84,7 @@
         actions.append(save,lens);item.append(top,authors,actions);list.append(item);
       }
       applyRatings();
-      $('.launcher').textContent='Lens · Top citations';
+      outlook(report);
       if(id) {
         const row=[...root.querySelectorAll('.paper')].find(row=>row.querySelector('.save').dataset.id===id);
         (row?.querySelector(action==='lens'?'.actions button:last-child':`.${action}`)||$('.close')).focus();
@@ -92,9 +99,11 @@
         if(expected.join(',')!==rendered.join(',')){render();return;}
       }
       applyRatings();
+      if(report)outlook(report);
     }
     return {host,root,
       begin(){host.hidden=false;$('.launcher').textContent='Lens · Checking citations…';$('.context').textContent='Checking this paper’s references for your best matches…';$('.status').textContent='';panel.setAttribute('aria-busy','true');},
+      progress(next){host.hidden=false;outlook(next,true);},
       complete(next){
         report=next;panel.setAttribute('aria-busy','false');host.hidden=false;$('.status').textContent='';const count=render();
         if(count&&!announced){announced=true;reveal();}

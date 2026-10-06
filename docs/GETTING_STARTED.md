@@ -37,8 +37,10 @@ setup; it is verified before replacing existing access and stored outside the ch
 in the local TabPFN authentication cache. Never put a token in a README or source file.
 
 A fresh profile needs **30 ratings, with at least 3 Interested and 3 Not for me** to
-unlock match estimates. Until then, Lens uses similarity and does not label it as a
-probability. Citation scoring excludes the cited paper’s own rating, so a saved citation
+unlock displayed match estimates. Until then, the normal shortlist uses similarity and
+does not label it as a probability. **Sharpen** can use internal uncertainty estimates
+after six ratings, including at least two of each kind; it never displays these early
+probabilities. Citation scoring excludes the cited paper’s own rating, so a saved citation
 can need one more eligible rating than the main shortlist. The loading indicator means
 an estimate is pending; an unavailable score does not prevent saving the paper.
 
@@ -54,11 +56,44 @@ an estimate is pending; an unavailable score does not prevent saving the paper.
 - References without arXiv links resolve by public DOI/title metadata. If a reference
   cannot be resolved, inspect its bibliography details, use **Find on arXiv**, or paste
   a known version into **Link an arXiv version**.
-- Once background citation scoring completes, Lens suggests up to five **Top matches in
-  this paper**. Close it and reopen with **Lens · Top citations**.
+- **Top matches in this paper** shows scoring progress and unavailable coverage, then
+  suggests up to five references. It also sums match probabilities across distinct,
+  resolved, scored references you have not rated. **About N more references you may like**
+  is a rounded expectation, not a guaranteed count; the total drops immediately when
+  you rate a reference. Close the popup and reopen with **Lens · Top citations**.
 
 PDF viewers are not supported. Some arXiv papers have no HTML version; use their abstract
 page and the side panel for ratings and recommendations.
+
+## Digest and Sharpen
+
+Open **Digest** to review papers with genuine match estimates **strictly above 80%**.
+Enable **Only notify me above 80% match** for local desktop Chrome alerts. Chrome checks
+every 30 minutes while it and the companion are running, using the latest local paper
+batch; fetch recent papers to add new candidates. Checks cover all subjects even when
+the view is filtered. **Check for new matches** runs a check now. Each new qualifying
+paper is marked delivered only after Chrome creates its notification successfully;
+empty checks stay silent. Allow Chrome notifications in your browser and OS settings.
+The companion web preview can show the digest but cannot create desktop alerts.
+
+Expand **Your 80%+ reality check** to compare first forecasts made before your rating
+with your later feedback. It shows how many papers forecast at **80% or higher** you
+liked, their average forecast, and a caution for fewer than ten observations. Existing
+Library ratings are never backfilled. This describes the papers you chose to rate,
+not every arXiv paper or scientific quality.
+
+Open **Sharpen** for up to six unrated papers. It starts with embedding diversity and
+reading interests. With TabPFN access and six ratings, including two of each kind, it
+balances binary prediction entropy, embedding diversity, and interest relevance within
+the model shortlist. Earlier profiles, missing access, or inference failure use diverse
+starter papers. Feedback refreshes the queue immediately. This is a practical heuristic,
+not formal value of information; faster cold-start learning has not yet been measured.
+
+## Update an existing installation
+
+After updating the source or ZIP, stop and restart the Python companion. Reload Lens
+at `chrome://extensions`, then refresh open arXiv tabs. Version 0.8.0 adds Chrome's
+`alarms` and `notifications` permissions; desktop alerts remain opt-in.
 
 ## Troubleshooting
 
@@ -72,7 +107,8 @@ page and the side panel for ratings and recommendations.
 | Reference lookup busy | Public providers can throttle requests. Retry later or manually link a verified arXiv version. |
 | No citation popup | Use arXiv HTML, reload the extension, then refresh the paper tab. Bibliography back-links and native PDFs are excluded. |
 | Port already in use | Stop the other companion on 8765 before starting another profile. The extension uses the standard port. |
-| New scripts do not appear | Reload Lens at `chrome://extensions` and refresh existing arXiv tabs. |
+| New scripts or API routes do not appear | Restart the companion, reload Lens at `chrome://extensions`, and refresh existing arXiv tabs. |
+| No digest alert | Enable alerts in Digest, allow Chrome notifications, keep Chrome and the companion running, and fetch a batch. Only new papers strictly above 80% qualify. |
 
 ## Optional Streamlit feed
 

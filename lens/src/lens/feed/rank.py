@@ -183,14 +183,15 @@ class FeedRanker:
         return self._model
 
     def rank(self, pool, V, profile: Profile, profile_v, q=None, today: date | None = None,
-             exclude: set[str] = frozenset()) -> Ranking:
+             exclude: set[str] = frozenset(), learning: bool = False) -> Ranking:
         today = today or date.today()
         y = profile.labels
         stage1 = similarity_scores(V, profile_v, y, q) if (len(y) or q is not None) else np.zeros(len(pool))
         available = np.array([p["id"] not in exclude for p in pool])
         stage1 = np.where(available, stage1, -np.inf)
         order = np.argsort(-stage1, kind="stable")
-        if self.engine == "similarity" or self.ready(profile):
+        pilot_ready = len(y) >= 6 and len(profile.likes) >= 2 and len(profile.dislikes) >= 2
+        if self.engine == "similarity" or (not pilot_ready if learning else self.ready(profile)):
             return Ranking(stage1, np.full(len(pool), np.nan), "similarity", order[:0])
         short = order[: min(self.shortlist_size, int(available.sum()))]
         # Context: the user's labels (leave-one-out features) + presumed negatives.

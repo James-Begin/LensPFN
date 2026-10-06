@@ -23,6 +23,7 @@ from lens.feed.embed import Embedder
 from lens.feed.rank import FeedRanker, Profile, explain
 from lens.feed.sources import fetch_paper, harvest, recent_window, TOP_LEVEL_SETS, cached_papers
 from lens.feed.store import Store, rate, unrate
+from lens.feed.insights import Insights
 from lens.feed.references import resolve, title_key
 from lens.feed.access import configure_token
 from difflib import SequenceMatcher
@@ -39,6 +40,9 @@ def paper_id(value):
 class Companion:
     def __init__(self, root: Path, cache: Path, device='cpu'):
         self.store = Store(root)
+        self.insights = Insights(root)
+        self.scored_pool = []
+        self.learning_cache = {}
         self.cache, self.device = cache, device
         self.tabpfn_token_path=Path(os.environ.get('LENS_TABPFN_TOKEN_FILE',Path.home()/'.cache/tabpfn/auth_token'))
         self.lock = threading.RLock()
@@ -93,6 +97,8 @@ class Companion:
             pool, name = self.store.latest_pool()
             ranker = FeedRanker()
             return {'likes': len(p.likes), 'dislikes': len(p.dislikes),
+                    'digest_enabled': self.insights.load()['digest_enabled'],
+                    'reliability': self.insights.reliability(),
                     'need_ratings': ranker.ready(p), 'match_after': ranker.match_after,
                     'need_likes': max(0, ranker.min_each-len(p.likes)),
                     'need_dislikes': max(0, ranker.min_each-len(p.dislikes)),
@@ -110,6 +116,7 @@ class Companion:
         configure_token(data.get('token'),self.tabpfn_token_path)
         with self.lock:
             self.ranking_cache.clear()
+            self.learning_cache.clear()
             self.paper_score_cache.clear()
             self.rankers.clear()
             self._reset_citations(self.store.load_profile())
@@ -137,8 +144,10 @@ class Companion:
                     paper = fetch_paper(pid, self.cache/'arxiv')
                 p = rate(p, paper, liked=value == 1)
             self.store.save_profile(p)
+            self.insights.observe(pid, value)
             self.revision += 1
             self.ranking_cache.clear()
+            self.learning_cache.clear()
             self.citation_stamp = self.store.profile_path.stat().st_mtime_ns
             self.citation_changes += 1
             if self.citation_changes >= 5 or was_ready != (FeedRanker().ready(p) == 0):
@@ -247,6 +256,7 @@ class Companion:
                 self.paper_score_cache.pop(next(iter(self.paper_score_cache)))
             if result['match'] is not None:
                 self.paper_score_cache[key] = result
+                self.insights.forecasts([{'id': paper['id'], 'match': result['match']}], {p['id'] for p in profile.labeled})
             return result
 
     def interests(self, text):
@@ -258,6 +268,7 @@ class Companion:
             self.store.save_profile(p)
             self.revision += 1
             self.ranking_cache.clear()
+            self.learning_cache.clear()
             self._reset_citations(p)
             return self.status()
 
@@ -282,6 +293,7 @@ class Companion:
             key = (self.revision, stamp, name, category, len(pool))
             if key in self.ranking_cache:
                 return self.ranking_cache[key]
+            self.scored_pool = []
             if not pool:
                 return {'papers': [], 'engine': 'similarity', 'personalized': bool(p.labeled or p.interests), 'warning': ''}
             warning = ''
@@ -307,6 +319,9 @@ class Companion:
                         raise
                     warning = 'TabPFN could not score this batch. Showing similarity ranking; check model access and the companion log.'
                     ranked = FeedRanker(engine='similarity').rank(pool, V, p, PV, q)
+                self.scored_pool = [{**paper, 'match': float(ranked.match[i]), 'reason': 'Above your quiet-digest threshold'}
+                                    for i, paper in enumerate(pool) if np.isfinite(ranked.match[i])]
+                self.insights.forecasts(self.scored_pool, {x['id'] for x in p.labeled})
                 order = np.argsort(-ranked.scores, kind='stable')[:20]
                 rows = []
                 for i in order:
@@ -315,6 +330,88 @@ class Companion:
                     rows.append({**pool[i], 'match': None if np.isnan(ranked.match[i]) else float(ranked.match[i]), 'reason': reason})
                 result = {'papers': rows, 'engine': ranked.engine, 'personalized': True, 'warning': warning}
             self.ranking_cache = {key: result}
+            return result
+
+    def digest(self, category=''):
+        with self.lock:
+            result = self.shortlist(category)
+            settings = self.insights.load()
+            papers = sorted((p for p in self.scored_pool if p['match'] > .8), key=lambda p: (-p['match'], p['id']))
+            if settings['digest_enabled']:
+                self.insights.offer([p['id'] for p in papers])
+            return {'papers': papers, 'enabled': settings['digest_enabled'],
+                    'new_ids': [p['id'] for p in papers if p['id'] not in settings['delivered']],
+                    'scored': len(self.scored_pool), 'reliability': self.insights.reliability(),
+                    'warning': result.get('warning', '') or ('' if self.scored_pool else
+                        'No match estimates yet. Complete your rating profile and connect TabPFN; similarity scores never trigger a digest.')}
+
+    def digest_preferences(self, data):
+        with self.lock:
+            self.insights.configure(data.get('enabled'))
+            return self.status()
+
+    def digest_delivered(self, data):
+        ids = data.get('ids')
+        if not isinstance(ids, list) or len(ids) > 300:
+            raise ValueError('Use a list of at most 300 paper IDs.')
+        ids = [paper_id(value) for value in ids]
+        with self.lock:
+            # Feedback or a refresh may change candidates after a valid alert was delivered.
+            if not ids or not set(ids) <= set(self.insights.load()['offered']):
+                raise ValueError('Only new high-match digest papers can be acknowledged.')
+            self.insights.delivered(ids)
+            return {'ok': True}
+
+    def learning(self, category=''):
+        if len(category) > 40:
+            raise ValueError('Invalid category.')
+        with self.lock:
+            profile = self.store.load_profile()
+            pool, name = self.store.latest_pool()
+            exclude = self.store.hidden() | {p['id'] for p in profile.labeled}
+            pool = [p for p in pool if p['id'] not in exclude and (not category or category in p['categories'])]
+            stamp = self.store.profile_path.stat().st_mtime_ns if self.store.profile_path.exists() else 0
+            key = (stamp, name, category, len(pool), self.status()['tabpfn_configured'])
+            if key in self.learning_cache:
+                return self.learning_cache[key]
+            if not pool:
+                return {'papers': [], 'strategy': 'diversity', 'warning': ''}
+            if self.embedder is None:
+                self.embedder = Embedder(self.cache/'feed', self.device)
+            vectors = self.embedder.papers(pool)
+            history = self.embedder.papers(profile.labeled) if profile.labeled else np.zeros((0, vectors.shape[1]), np.float32)
+            query = self.embedder.query(profile.interests) if profile.interests else None
+            strategy, warning = 'diversity', ''
+            utility = np.ones(len(pool))
+            eligible = np.arange(len(pool))
+            if len(profile.labeled) >= 6 and len(profile.likes) >= 2 and len(profile.dislikes) >= 2 and self.status()['tabpfn_configured']:
+                ranker = self.rankers.setdefault('tabpfn-fast', FeedRanker(engine='tabpfn-fast', device=self.device, shortlist=300))
+                try:
+                    ranked = ranker.rank(pool, vectors, profile, history, query, learning=True)
+                    eligible = np.flatnonzero(np.isfinite(ranked.match))
+                    if not len(eligible):
+                        eligible = np.arange(len(pool))
+                        warning = 'No uncertainty estimates are available; diverse starter papers are shown instead.'
+                    else:
+                        probability = np.clip(ranked.match[eligible], 1e-6, 1-1e-6)
+                        utility[eligible] = -(probability*np.log2(probability)+(1-probability)*np.log2(1-probability))
+                        strategy = 'uncertainty'
+                except Exception:
+                    warning = 'TabPFN learning suggestions are unavailable. Diverse starter papers are shown instead.'
+            chosen = []
+            while len(chosen) < min(6, len(eligible)):
+                reference = np.vstack([history, vectors[chosen]]) if chosen else history
+                novelty = 1-np.clip((vectors @ reference.T).max(1), 0, 1) if len(reference) else np.ones(len(pool))
+                utility_now = utility * (.65+.35*novelty)
+                if query is not None:
+                    utility_now *= .85+.15*np.clip(vectors @ query, 0, 1)
+                candidates = [i for i in eligible if i not in chosen]
+                chosen.append(max(candidates, key=lambda i: (utility_now[i], pool[i]['created'], pool[i]['id'])))
+            reason = ('Lens is unsure about this paper; your rating would help resolve it.' if strategy == 'uncertainty'
+                      else 'A different angle on your interests to give Lens a broader starting point.')
+            result = {'papers': [{**pool[i], 'match': None, 'reason': reason} for i in chosen],
+                      'strategy': strategy, 'warning': warning}
+            self.learning_cache = {key: result}
             return result
 
     def refresh(self, archive, days):
@@ -337,6 +434,7 @@ class Companion:
                     tmp.replace(path)
                     self.revision += 1
                     self.ranking_cache.clear()
+                    self.learning_cache.clear()
                 self.refresh_state = {'state': 'done', 'count': len(papers)}
             except Exception:
                 self.refresh_state = {'state': 'error', 'message': 'arXiv could not be refreshed. Your previous feed is still available.'}
@@ -396,7 +494,7 @@ def make_handler(companion, assets):
                 if not path.is_file():return self.reply(404,{'error':'Panel assets not found.'})
                 page=path.read_text().replace('<script type="module"','<script src="/setup-runtime.js"></script><script type="module"',1)
                 return self.reply(200,page.encode(),'text/html')
-            assets_map = {'/': 'panel.html', '/panel.html': 'panel.html', '/panel.css': 'panel.css', '/panel.js': 'panel.js', '/icons.js': 'icons.js', '/list-motion.js': 'list-motion.js', '/onboarding.js': 'onboarding.js', '/citation-prefetch.js': 'citation-prefetch.js', '/citation-recommendations.js': 'citation-recommendations.js', '/recommendation-popup.js': 'recommendation-popup.js', '/reference-parser.js': 'reference-parser.js', '/citations.js': 'citations.js', '/citation-popup.js': 'citation-popup.js'}
+            assets_map = {'/': 'panel.html', '/panel.html': 'panel.html', '/panel.css': 'panel.css', '/panel.js': 'panel.js', '/icons.js': 'icons.js', '/digest.js': 'digest.js', '/list-motion.js': 'list-motion.js', '/onboarding.js': 'onboarding.js', '/citation-prefetch.js': 'citation-prefetch.js', '/citation-recommendations.js': 'citation-recommendations.js', '/recommendation-popup.js': 'recommendation-popup.js', '/reference-parser.js': 'reference-parser.js', '/citations.js': 'citations.js', '/citation-popup.js': 'citation-popup.js'}
             assets_map.update({'/html/citation-preview':'../tests/fixtures/citation-preview.html',
                               '/fixture-runtime.js':'../tests/fixtures/citation-runtime.js',
                               '/fixture.css':'../tests/fixtures/citation-preview.css',
@@ -412,6 +510,10 @@ def make_handler(companion, assets):
                 if self.command == 'GET':
                     if url.path == '/api/status':
                         return self.reply(200, companion.status())
+                    if url.path == '/api/digest':
+                        return self.reply(200, companion.digest(parse_qs(url.query).get('category', [''])[0]))
+                    if url.path == '/api/learning':
+                        return self.reply(200, companion.learning(parse_qs(url.query).get('category', [''])[0]))
                     if url.path == '/api/library':
                         return self.reply(200, companion.library())
                     if url.path == '/api/paper':
@@ -427,6 +529,10 @@ def make_handler(companion, assets):
                     data = json.loads(self.rfile.read(size))
                     if not isinstance(data, dict):
                         raise ValueError('Expected a JSON object.')
+                    if url.path == '/api/digest-preferences':
+                        return self.reply(200, companion.digest_preferences(data))
+                    if url.path == '/api/digest-delivered':
+                        return self.reply(200, companion.digest_delivered(data))
                     if url.path == '/api/resolve-reference':
                         return self.reply(200, companion.resolve_reference(data))
                     if url.path == '/api/tabpfn-access':

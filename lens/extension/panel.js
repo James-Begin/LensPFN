@@ -144,7 +144,7 @@ function renderStatus() {
   const target=status.match_after;
   const progress=Math.max(0,target-status.need_ratings);
   const complete=status.need_ratings===0;
-  show('#learning',!complete&&tab==='shortlist');
+  show('#learning',!complete&&['shortlist','learn'].includes(tab));
   $('#learning-count').textContent=`${count} ${count===1?'rating':'ratings'}`;
   const missing=[];
   if(status.need_likes)missing.push(`${status.need_likes} Interested`);
@@ -156,6 +156,12 @@ function renderStatus() {
   if(tab==='shortlist') {
     $('#feed-title').textContent=count||status.interests?'Papers for your next read.':'A place to start.';
     $('#feed-description').textContent=count||status.interests?'Selected from the latest arXiv batch using your interests and ratings.':'Recent arXiv papers, ready for your first impressions.';
+  }else if(tab==='digest'){
+    $('#feed-title').textContent='A quieter way to discover.';
+    $('#feed-description').textContent='Only papers with a match estimate above 80%. No new matches means no alert.';
+  }else if(tab==='learn'){
+    $('#feed-title').textContent='Sharpen your reading profile.';
+    $('#feed-description').textContent='A few useful judgments, one paper at a time. Read the abstract, then give your honest first impression.';
   }else{
     $('#feed-title').textContent='Your paper library.';
     $('#feed-description').textContent='Papers you marked while browsing arXiv.';
@@ -164,6 +170,13 @@ function renderStatus() {
   if(status.refresh?.state==='running') {
     $('#refresh').disabled=true;$('#refresh').title=`Fetching ${status.refresh.count||0} papers…`;
   } else {$('#refresh').disabled=false;$('#refresh').title='Fetch the last 3 days from arXiv';}
+}
+function reliability(next=status?.reliability) {
+  if(!next)return;
+  $('#reliability-summary').textContent=next.count?`80%+ check · you liked ${next.liked} of ${next.count}`:'Your 80%+ reality check · awaiting feedback';
+  $('#reliability-detail').textContent=next.count?
+    `Of papers Lens estimated at 80% or higher before your rating, you liked ${next.liked} of ${next.count} (${Math.round(100*next.liked/next.count)}%). Their average forecast was ${Math.round(100*next.mean_prediction)}%.${next.count<10?' This is a small sample so far.':''}`:
+    'No prospective high-match ratings yet. Rate papers after Lens scores them to start this check; your past library is never counted retroactively.';
 }
 function paperRow(p) {
   const row=document.createElement('article');row.className='paper';row.dataset.paperId=p.id;
@@ -182,9 +195,12 @@ async function render(options={}) {
   if(setup?.active){await setup.refresh();return;}
   const ticket=++renderTicket;
   clearError();
-  $('#list-update').textContent=options.quiet&&tab==='shortlist'?'Updating your shortlist…':'';
+  const changingView=previousView!==tab;
+  if(changingView){$('#paper-list').replaceChildren();show('#empty',false);}
+  const updates={shortlist:'Updating your shortlist…',digest:'Checking high matches…',learn:'Choosing papers to sharpen your profile…'};
+  $('#list-update').textContent=options.quiet&&!changingView?(updates[tab]||''):'';
   $('#paper-list').setAttribute('aria-busy','true');
-  if(!options.quiet)show('#loading');
+  if(!options.quiet||changingView)show('#loading');
   try {
     const nextStatus=await request('/api/status');
     if(ticket!==renderTicket)return;
@@ -193,19 +209,28 @@ async function render(options={}) {
     if(ticket!==renderTicket)return;
     show('#connect',false);show('#workspace');
     renderStatus();renderCurrent();
-    show('#feed-tools',tab==='shortlist');
-    $('#shortlist-tab').classList.toggle('active',tab==='shortlist');
-    $('#library-tab').classList.toggle('active',tab==='library');
-    $('#shortlist-tab').setAttribute('aria-current',tab==='shortlist'?'page':'false');
-    $('#library-tab').setAttribute('aria-current',tab==='library'?'page':'false');
-    const data=tab==='shortlist'?await request(`/api/shortlist?category=${encodeURIComponent(category)}`):await request('/api/library');
+    show('#feed-tools',tab!=='library');
+    show('#digest-controls',tab==='digest');
+    $('#digest-enabled').checked=Boolean(status.digest_enabled);
+    reliability();
+    for(const view of ['shortlist','digest','learn','library']) {
+      $(`#${view}-tab`).classList.toggle('active',tab===view);
+      $(`#${view}-tab`).setAttribute('aria-current',tab===view?'page':'false');
+    }
+    const routes={shortlist:'/api/shortlist',digest:'/api/digest',learn:'/api/learning',library:'/api/library'};
+    const data=await request(routes[tab]+(tab==='library'?'':`?category=${encodeURIComponent(category)}`));
     if(ticket!==renderTicket)return;
     const papers=data.papers||[];
     const expanded=new Set(Array.from($('#paper-list').querySelectorAll('.paper')).filter(row=>row.querySelector('details[open]')).map(row=>row.dataset.paperId));
     const rows=papers.map(paperRow);
     for(const row of rows)if(expanded.has(row.dataset.paperId))row.querySelector('details')?.setAttribute('open','');
-    replacePaperList($('#paper-list'),rows,{animate:tab==='shortlist'&&previousView==='shortlist'});
+    replacePaperList($('#paper-list'),rows,{animate:tab!=='library'&&previousView===tab});
     previousView=tab;
+    if(tab==='digest') {
+      reliability(data.reliability);
+      $('#feed-description').textContent=data.scored?`${papers.length} above 80% among ${data.scored} scored candidates. More candidates may still be unscored.`:'High-match estimates need a ready profile and configured TabPFN access.';
+    }
+    if(tab==='learn')$('#feed-description').textContent=data.strategy==='uncertainty'?'Rate these papers to sharpen your profile. Lens chose uncertain predictions with variety, rather than more of the same.':'Start with a few different papers. After six ratings, including two of each kind, TabPFN can guide this queue by uncertainty.';
     if(options.restoreFocus) {
       const rows=Array.from($('#paper-list').children);
       const source=options.restoreFocus;
@@ -216,8 +241,8 @@ async function render(options={}) {
     }
     show('#empty',papers.length===0);
     if(!papers.length) {
-      $('#empty-title').textContent=tab==='library'?'Your library is still open.':'No papers in this view.';
-      $('#empty-description').textContent=tab==='library'?'Mark a paper as Interested or Not for me on arXiv, or here in your shortlist.':'Choose another subject or fetch a new batch from arXiv.';
+      $('#empty-title').textContent=tab==='digest'?'Nothing above 80% yet.':tab==='library'?'Your library is still open.':'No papers in this view.';
+      $('#empty-description').textContent=tab==='digest'?'You’ll only hear from Lens when a paper clears your threshold. Keep rating, or fetch a new batch.':tab==='library'?'Mark a paper as Interested or Not for me on arXiv, or here in your shortlist.':'Choose another subject or fetch a new batch from arXiv.';
     }
     show('#model-warning',Boolean(data.warning));$('#model-warning').textContent=data.warning||'';
     if(tab==='shortlist'&&data.engine==='recent'&&papers.length) $('#feed-description').textContent='Recently announced papers. Rate or describe your interests to personalize this list.';
@@ -245,7 +270,10 @@ async function init() {
     onDone:()=>render(),
   });
   if(browserExtension) {
+    const savedView=(await chrome.storage.session.get('lensView')).lensView;
+    if(savedView==='digest'){tab='digest';await chrome.storage.session.remove('lensView');}
     chrome.runtime.onMessage.addListener(m=>{
+      if(m.type==='showDigest'&&!setup.active){tab='digest';chrome.storage.session.remove('lensView');render();}
       if(m.type==='changed'&&!busy)render({quiet:true});
       if(m.type==='citationChanged'&&!setup.active)renderCitation();
     });
@@ -256,8 +284,19 @@ async function init() {
   $('#settings-button').addEventListener('click',()=>show('#settings',$('#settings').hidden));
   $('#restart-setup').addEventListener('click',()=>{clearError();setup.start(status);});
   $('#close-settings').addEventListener('click',()=>show('#settings',false));
-  $('#shortlist-tab').addEventListener('click',()=>{tab='shortlist';render();});
-  $('#library-tab').addEventListener('click',()=>{tab='library';render();});
+  for(const view of ['shortlist','digest','learn','library'])$(`#${view}-tab`).addEventListener('click',()=>{tab=view;render();});
+  $('#digest-enabled').addEventListener('change',async()=>{
+    const control=$('#digest-enabled');control.disabled=true;
+    try{status=await request('/api/digest-preferences',{enabled:control.checked});message(control.checked?'Quiet digest enabled.':'Digest alerts paused.');}catch(e){control.checked=Boolean(status?.digest_enabled);error(e.message);}finally{control.disabled=false;}
+  });
+  $('#digest-check').addEventListener('click',async()=>{
+    const button=$('#digest-check');button.disabled=true;button.textContent='Checking matches…';$('#digest-feedback').textContent='';
+    try {
+      if(browserExtension){const reply=await chrome.runtime.sendMessage({type:'checkDigest'});if(!reply?.ok)throw new Error(reply?.error||'Could not check the digest.');$('#digest-feedback').textContent=!reply.data.enabled?`Alerts are paused. ${reply.data.papers.length} high-match papers in your digest.`:reply.data.notification_warning||(reply.data.notified?`${reply.data.notified} new high-match papers notified.`:'No new alerts. Your digest is up to date.');}
+      else $('#digest-feedback').textContent='Digest refreshed. Desktop alerts run through the installed Chrome extension.';
+      await render({quiet:true});
+    }catch(e){error(e.message);}finally{button.disabled=false;button.textContent='Check for new matches';}
+  });
   $('#category').addEventListener('change',e=>{category=e.target.value;render();});
   $('#refresh').addEventListener('click',async()=>{
     try{await request('/api/refresh',{archive:'cs',days:3});message('Fetching the latest computer science papers.');await render({quiet:true});}

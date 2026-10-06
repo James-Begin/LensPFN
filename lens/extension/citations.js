@@ -64,7 +64,8 @@
   });
   const recommendations=LensCitationRecommendations.create({prefetch,currentId:paperId,
     onResolved:(reference,id)=>resolvedReferences.set(reference,id),
-    onComplete:report=>suggestions.complete(report)
+    onComplete:report=>suggestions.complete(report),
+    onProgress:report=>suggestions.progress?.(report)
   });
   function collectCitations() {
     const references=new Map();

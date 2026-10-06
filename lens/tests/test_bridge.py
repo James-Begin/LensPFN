@@ -35,6 +35,22 @@ class BridgeTest(unittest.TestCase):
         conn.request('GET' if body is None else 'POST',path,body=None if body is None else json.dumps(body),headers=hdr)
         r=conn.getresponse(); data=r.read(); conn.close()
         return r.status,json.loads(data)
+    def test_digest_and_learning_routes_are_authenticated_and_preferences_validate(self):
+        for route in ('/api/digest','/api/learning'):
+            self.assertEqual(self.request(route,auth=False)[0],401)
+            self.assertEqual(self.request(route,headers={'Origin':'https://arxiv.org'})[0],403)
+        self.assertEqual(self.request('/api/digest-preferences',{'enabled':True},auth=False)[0],401)
+        self.assertEqual(self.request('/api/digest-preferences',{'enabled':'true'})[0],400)
+        code,data=self.request('/api/digest-preferences',{'enabled':True})
+        self.assertEqual(code,200);self.assertTrue(data['digest_enabled'])
+        code,digest=self.request('/api/digest')
+        self.assertEqual(code,200);self.assertEqual(digest['papers'],[])
+        self.assertTrue(digest['enabled']);self.assertEqual(digest['scored'],0)
+        self.assertEqual(self.request('/api/digest-delivered',{'ids':['2207.01848']})[0],400)
+        with patch.object(self.c,'learning',return_value={'papers':[],'strategy':'diversity'}):
+            code,data=self.request('/api/learning?category=cs.LG')
+            self.assertEqual(code,200);self.assertEqual(data['strategy'],'diversity')
+
     def test_requires_key(self):
         self.assertEqual(self.request('/api/status',auth=False)[0],401)
     def test_access_setup_is_authenticated_and_never_returns_the_token(self):
