@@ -2,8 +2,8 @@ Exploratory re-analysis of held-out test predictions (pre-registered run; no new
 
 The original `roc:logistic` baseline is distinct from the corrected, exploratory
 `rocplatt:g0.5` model in the [full results](../results/feedbench.md). Threshold
-coverage is pooled here; the primary results average within users. The product
-does not implement background notifications.
+coverage is pooled here; the primary results average within users. This historical analysis uses `p ≥ 0.8`; the current opt-in digest uses `p > 0.8`.
+It evaluates replay predictions, not delivered Chrome notifications.
 
 | Model | Precision in each user's top 30% | Δ vs TabPFN-Fast (95% CI) |
 |---|---|---|

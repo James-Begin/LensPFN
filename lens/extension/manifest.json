@@ -4,15 +4,8 @@
   "description": "Rate arXiv papers, follow HTML citations, and build a personal shortlist with your local Lens ranker.",
   "version": "0.8.0",
   "minimum_chrome_version": "116",
-  "permissions": [
-    "storage",
-    "sidePanel",
-    "alarms",
-    "notifications"
-  ],
-  "host_permissions": [
-    "http://127.0.0.1/*"
-  ],
+  "permissions": ["storage", "sidePanel", "alarms", "notifications"],
+  "host_permissions": ["http://127.0.0.1/*"],
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -31,20 +24,12 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://arxiv.org/abs/*",
-        "https://www.arxiv.org/abs/*"
-      ],
-      "js": [
-        "content.js"
-      ],
+      "matches": ["https://arxiv.org/abs/*", "https://www.arxiv.org/abs/*"],
+      "js": ["content.js"],
       "run_at": "document_idle"
     },
     {
-      "matches": [
-        "https://arxiv.org/html/*",
-        "https://www.arxiv.org/html/*"
-      ],
+      "matches": ["https://arxiv.org/html/*", "https://www.arxiv.org/html/*"],
       "js": [
         "reference-parser.js",
         "citation-prefetch.js",

@@ -1,4 +1,5 @@
 """Check repository links, packaged extension files, and the hosted showcase link."""
+
 from __future__ import annotations
 
 from html import unescape
@@ -11,9 +12,14 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 errors = []
-paths = subprocess.check_output(
-    ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=ROOT
-).decode().split("\0")
+paths = (
+    subprocess.check_output(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+        cwd=ROOT,
+    )
+    .decode()
+    .split("\0")
+)
 files = sorted({ROOT / path for path in paths if path and (ROOT / path).is_file()})
 
 
@@ -34,15 +40,20 @@ def anchors(path):
 links = 0
 for path in files:
     relative = path.relative_to(ROOT)
-    if any(part.startswith((".lens-feed", ".cache", ".venv")) or
-           part in {"node_modules", "artifacts"} for part in relative.parts):
+    if any(
+        part.startswith((".lens-feed", ".cache", ".venv")) or part in {"node_modules", "artifacts"}
+        for part in relative.parts
+    ):
         errors.append(f"Local-only file included: {relative}")
     if path.name in {".env", "auth_token", "bridge-token", "profile.json"}:
         errors.append(f"Private file included: {relative}")
     if path.suffix in {".py", ".js", ".cjs", ".json", ".md", ".yml", ".toml"}:
         # Report only filenames, never matching credential values.
-        if re.search(r"tabpfn_sk_[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|"
-                     r"-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----", path.read_text()):
+        if re.search(
+            r"tabpfn_sk_[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|"
+            r"-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----",
+            path.read_text(),
+        ):
             errors.append(f"Possible credential in: {relative}")
     if path.suffix != ".md":
         continue
@@ -57,15 +68,34 @@ for path in files:
         links += 1
         if not linked.exists():
             errors.append(f"Broken link in {relative}: {target}")
-        elif url.fragment and linked.suffix == ".md" and unquote(url.fragment) not in anchors(linked):
+        elif (
+            url.fragment and linked.suffix == ".md" and unquote(url.fragment) not in anchors(linked)
+        ):
             errors.append(f"Unknown heading in {relative}: {target}")
 
 manifest = json.loads((ROOT / "lens/extension/manifest.json").read_text())
 source = ROOT / "lens/extension"
-assets = [manifest["background"]["service_worker"], manifest["side_panel"]["default_path"]]
+assets = [
+    manifest["background"]["service_worker"],
+    manifest["side_panel"]["default_path"],
+]
 assets += [name for script in manifest["content_scripts"] for name in script["js"]]
 assets += list(manifest["icons"].values())
+package_version = re.search(
+    r'^version = "([^"]+)"$', (ROOT / "lens/pyproject.toml").read_text(), re.M
+).group(1)
+if package_version != manifest["version"]:
+    errors.append("Python package and extension versions differ.")
+expected = {
+    "extension/" + path.relative_to(source).as_posix()
+    for path in source.rglob("*")
+    if path.is_file()
+    and path.suffix in {".js", ".css", ".html", ".json", ".png", ".md"}
+    and not any(part.startswith(".") for part in path.relative_to(source).parts)
+}
 with zipfile.ZipFile(ROOT / "demo/lens-extension.zip") as archive:
+    if set(archive.namelist()) != expected or len(archive.namelist()) != len(expected):
+        errors.append("Extension package must contain every current asset exactly once.")
     for name in archive.namelist():
         original = source / Path(name).relative_to("extension")
         if not original.is_file() or archive.read(name) != original.read_bytes():

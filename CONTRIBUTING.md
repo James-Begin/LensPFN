@@ -7,7 +7,7 @@ From the repository root:
 
 ```sh
 cd lens
-uv sync --locked --extra semantic --extra tabpfn --extra feed
+uv sync --locked --extra semantic --extra tabpfn
 uv run --no-sync python -m unittest discover -s tests -v
 node --test tests/test_*.cjs
 ```
@@ -29,10 +29,9 @@ python3 scripts/check_submission.py
 ```
 
 This deterministic ZIP contains only extension source and icons, with no profile, pairing
-key, token, cache, environment, or model weights. Older prototypes and snapshots are
-available in Git history; the checkout contains the current product and its benchmark.
+key, token, cache, environment, or model weights. The checkout contains the current product and its benchmark.
 The submission check verifies local documentation links, manifest assets, package/source
-agreement, common credential patterns, and the approved movie checksum.
+agreement, common credential patterns, and the hosted demo link.
 
 Keep documentation claims tied to [reported results](docs/research/results/feedbench.md),
 and distinguish measured inference from illustrative media. Do not commit personal
@@ -43,3 +42,15 @@ Benchmark dependencies and reproduction commands are documented in the
 [research guide](docs/research/README.md#reproduce-the-benchmark). The README comparison
 figure is regenerated with `uv run --extra bench python scripts/submission_figure.py`
 from `lens/`; it reads the reported aggregate metrics, without rerunning inference.
+
+Python formatting and unused-code checks use the pinned development extra:
+
+```sh
+cd lens
+uv sync --locked --extra dev
+uv run --no-sync ruff check --config pyproject.toml src scripts tests ../scripts
+uv run --no-sync ruff format --config pyproject.toml --check src scripts tests ../scripts
+```
+
+JavaScript/CSS/HTML are formatted with `npx --yes prettier@3.6.2 --write
+extension tests`. This is a development command; the extension has no build step.

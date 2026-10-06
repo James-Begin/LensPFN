@@ -9,11 +9,11 @@ Lens places two rating buttons on arXiv abstract pages and shows a personal pape
 From the extracted `lens/` project directory:
 
 ```bash
-uv sync --locked --extra semantic --extra tabpfn --extra feed
+uv sync --locked --extra semantic --extra tabpfn
 uv run --no-sync python -m lens.feed.bridge --device cpu
 ```
 
-Use `--device mps` on Apple Silicon or `--device cuda` with an available NVIDIA GPU. Open [http://127.0.0.1:8765](http://127.0.0.1:8765) to preview the panel and copy its pairing key from the preferences button. The bridge reuses `.lens-feed/` and `.cache/`, including any batch previously fetched from Streamlit. The bridge only listens on `127.0.0.1`.
+Use `--device mps` on Apple Silicon or `--device cuda` with an available NVIDIA GPU. Open [http://127.0.0.1:8765](http://127.0.0.1:8765) to preview the panel and copy its pairing key from the preferences button. The bridge reuses `.lens-feed/` and `.cache/`. The bridge only listens on `127.0.0.1`.
 
 To inspect the cited-paper card without installing a browser extension, open [the local citation preview](http://127.0.0.1:8765/?citation=2207.01848). Its sample citation is clearly labelled; the paper metadata and save action use the same local API as the extension.
 
@@ -38,7 +38,7 @@ After feedback, the old shortlist stays visible while Lens ranks the next batch.
 
 Start the companion whenever you want the extension to work. On a new profile, the shortlist shows recently announced papers until you rate a paper or add interests. After 30 ratings, including at least 3 positive and 3 negative ratings, Lens can show TabPFN match estimates if authorized TabPFN model access has been configured. Without that access it continues with similarity ranking and says so in the panel.
 
-Use **Fetch recent arXiv papers** in the panel to harvest a new three-day computer science batch. The companion follows arXiv's OAI-PMH request spacing and caches metadata. If a single-paper OAI lookup is unavailable, rating that paper uses public abstract-page metadata instead. Fetching can take several seconds; first-time embedding of a large batch also takes time. Other archives can still be fetched from the Streamlit application.
+Use **Fetch recent arXiv papers** in the panel to harvest a new three-day computer science batch. The companion follows arXiv's OAI-PMH request spacing and caches metadata. If a single-paper OAI lookup is unavailable, rating that paper uses public abstract-page metadata instead. Fetching can take several seconds; first-time embedding of a large batch also takes time.
 
 Reference resolution sends only public bibliography DOI/title/reference text to Semantic Scholar and DataCite; it does not send your ratings, interests, or profile. Lookup responses are cached for a day; transient failures remain retryable. The existing background prefetch queue handles these lookups too.
 

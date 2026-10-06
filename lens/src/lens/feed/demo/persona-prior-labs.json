@@ -1,6 +1,6 @@
 {
  "name": "Prior Labs researcher (demo)",
- "description": "Liked the 29 TabPFN-family papers cited in the TabPFN-3.5 technical report; disliked 15 near-miss papers (LLM reasoning, RL, diffusion, a few vision/robotics). Pool: arXiv cs + stat, 2026-09-25 to 2026-10-02.",
+ "description": "Liked the 29 TabPFN-family papers cited in the TabPFN-3.5 technical report; disliked 15 near-miss papers (LLM reasoning, RL, diffusion, a few vision/robotics). Demo pool: 300 cs.LG/stat.ML candidates selected from public arXiv metadata harvested 2026-09-25 to 2026-10-02.",
  "interests": "tabular foundation models, in-context learning, prior-data fitted networks",
  "likes": [
   {

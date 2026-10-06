@@ -10,7 +10,7 @@ Commands below assume a terminal opened at the repository root:
 
 ```sh
 cd lens
-uv sync --locked --extra semantic --extra tabpfn --extra feed
+uv sync --locked --extra semantic --extra tabpfn
 uv run --no-sync python -m lens.feed.bridge --device cpu
 ```
 
@@ -110,14 +110,3 @@ at `chrome://extensions`, then refresh open arXiv tabs. Version 0.8.0 adds Chrom
 | New scripts or API routes do not appear | Restart the companion, reload Lens at `chrome://extensions`, and refresh existing arXiv tabs. |
 | No digest alert | Enable alerts in Digest, allow Chrome notifications, keep Chrome and the companion running, and fetch a batch. Only new papers strictly above 80% qualify. |
 
-## Optional Streamlit feed
-
-From `lens/`:
-
-```sh
-uv run --no-sync streamlit run src/lens/feed/app.py
-```
-
-It shares the normal `.lens-feed/` profile with the companion. The sidebar demo loader
-replaces that app’s current profile, so use a separate `LENS_FEED_HOME` if exploring it.
-The companion demo helper is the safer demo path. [Full extension details](../lens/extension/README.md).

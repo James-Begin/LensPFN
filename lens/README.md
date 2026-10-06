@@ -13,16 +13,3 @@ Run commands here so uv finds the pinned environment.
 | [scripts/](scripts/) | Demo-profile preparation, benchmark reports, and figure generation. |
 | [tests/](tests/) | Python/JavaScript tests and browser interaction fixtures. |
 
-## Optional Streamlit feed
-
-The extension is the main interface. A standalone feed is also available:
-
-```sh
-uv sync --locked --extra semantic --extra tabpfn --extra feed
-uv run --no-sync streamlit run src/lens/feed/app.py
-```
-
-Both interfaces share the default local reading profile. Set `LENS_FEED_HOME` to a
-separate path before trying Streamlit's bundled persona: that loader replaces the
-selected profile. For a demo that preserves your normal history, use the
-[extension demo helper](../docs/DEMO.md).

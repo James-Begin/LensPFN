@@ -17,14 +17,13 @@ uv run --no-sync python -m lens.feed.bridge --root .lens-feed-demo --device cpu
 Use `--device mps` on Apple Silicon or `--device cuda` on an available NVIDIA GPU.
 
 This creates a separate profile with **29 likes, 15 dislikes, and 300 public cs.LG/stat.ML
-candidates** from a bundled arXiv week. Its persona ratings are curated examples, not
+candidates** selected from public arXiv metadata harvested September 25–October 2, 2026. Its persona ratings are curated examples, not
 Scholar Inbox users or the video’s 88-rating history. No arXiv harvest is needed for this
 pool. E5 and TabPFN still download on first use; live HTML citations and reference lookup
 need network access. No fabricated scores, provider keys, or personal history are shipped.
 
 The helper refuses an existing destination. To make another demo, pass
-`--root .lens-feed-demo-2` to both commands. `--limit 0` loads the full bundled 8,211-paper
-week and takes longer to embed. The normal `.lens-feed/` remains untouched.
+`--root .lens-feed-demo-2` to both commands. `--limit 1` through `--limit 300` selects a smaller subset of the fixed demo pool. The normal `.lens-feed/` remains untouched.
 
 Copy this demo companion’s pairing key from **http://127.0.0.1:8765/**, load the unpacked
 extension, and configure your own TabPFN access in guided setup. Without it, the same
@@ -79,11 +78,6 @@ top references, Digest, and the prospective reality check. A browser fills the f
 inputs appear typed and button highlights wrap around controls. The reality-check action
 launches the TabPFN paper with a genie transition. There are no mouse-click or button
 sounds. The original instrumental **Open Horizons** accompanies the film.
-
-The revised cut reuses the approved opening, complete rating montage, shortlist, model
-explanation, and TabPFN ending. It adds the new feature scenes and removes the old
-Library/recent-paper fetching sequence. Sharpen transitions back to the profile within
-the side panel; the paper remains aligned at the montage handoff.
 
 Scores, feedback, notification banners, and timing are illustrative, not a recorded live
 inference session. Sharpen starts with diverse suggestions at zero ratings; uncertainty
@@ -140,7 +134,7 @@ for presentation. The 88 montage papers use public metadata from Lens’s bundle
 pool/persona; their pages are stylized layouts, not 88 separate PDF captures.
 
 Paper contents and marks retain their rights holders’ terms. No complete paper PDFs,
-model weights, tokens, or personal profiles are included in this media directory.
+model weights, tokens, or personal profiles are included in the repository.
 [Repository notices](../NOTICE.md).
 
 

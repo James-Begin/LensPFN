@@ -7,11 +7,12 @@ Two stages, standard for recommenders:
      user's own ratings only. Per the cold-start curve, match scores are shown from
      ``match_after`` ratings (where they beat the user's own like rate), and from then on
      TabPFN also orders the shortlist, so the list is sorted by the score on each card
-     (held-out ranking quality is tied with similarity; see README).
+     (ranking superiority is not established; see README).
 
 TabPFN scores are model estimates of P(like) among papers like those the user rates;
 the benchmark measured their calibration among shown papers, not all of arXiv.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -21,15 +22,40 @@ import re
 
 import numpy as np
 
-FEATURES = ["sim_like_mean", "sim_like_max", "sim_like_top3", "sim_dislike_mean", "sim_dislike_max",
-            "interest_sim", "rocchio", "shared_authors_like", "shared_authors_dislike",
-            "primary_cat_like", "primary_cat_dislike", "any_cat_like", "days_old",
-            "log_authors", "n_categories", "log_abstract_words", "mentions_code"]
+FEATURES = [
+    "sim_like_mean",
+    "sim_like_max",
+    "sim_like_top3",
+    "sim_dislike_mean",
+    "sim_dislike_max",
+    "interest_sim",
+    "rocchio",
+    "shared_authors_like",
+    "shared_authors_dislike",
+    "primary_cat_like",
+    "primary_cat_dislike",
+    "any_cat_like",
+    "days_old",
+    "log_authors",
+    "n_categories",
+    "log_abstract_words",
+    "mentions_code",
+]
 # Compact signal subset appended to the raw embedding ("embsig" — best on the Scholar
-# Inbox dev benchmark; shared with lens.feedbench so product and benchmark match).
-SIGNALS = ["sim_like_mean", "sim_like_max", "sim_like_top3", "sim_dislike_mean", "sim_dislike_max",
-           "rocchio", "shared_authors_like", "shared_authors_dislike", "primary_cat_like",
-           "primary_cat_dislike", "days_old"]
+# Inbox dev benchmark; the product omits age, as documented below).
+SIGNALS = [
+    "sim_like_mean",
+    "sim_like_max",
+    "sim_like_top3",
+    "sim_dislike_mean",
+    "sim_dislike_max",
+    "rocchio",
+    "shared_authors_like",
+    "shared_authors_dislike",
+    "primary_cat_like",
+    "primary_cat_dislike",
+    "days_old",
+]
 # The product omits paper age: dropping it left held-out Brier unchanged (0.191 vs 0.191)
 # and removes a train/serve skew for liked papers that are much older than new candidates.
 PRODUCT_SIGNALS = [s for s in SIGNALS if s != "days_old"]
@@ -38,7 +64,7 @@ CODE = re.compile(r"github\.com|code (is )?(publicly )?available|open[- ]source"
 
 @dataclass
 class Profile:
-    likes: list[dict] = field(default_factory=list)      # paper dicts
+    likes: list[dict] = field(default_factory=list)  # paper dicts
     dislikes: list[dict] = field(default_factory=list)
     interests: str = ""
 
@@ -66,8 +92,18 @@ def similarity_scores(V, profile_v, labels, q):
     return _rocchio(V, profile_v[labels == 1], profile_v[labels == 0], q)
 
 
-def features(papers, V, profile: Profile, profile_v, q, today: date, self_index=None,
-             as_of: list[date] | None = None, groups=None, profile_groups=None):
+def features(
+    papers,
+    V,
+    profile: Profile,
+    profile_v,
+    q,
+    today: date,
+    self_index=None,
+    as_of: list[date] | None = None,
+    groups=None,
+    profile_groups=None,
+):
     """Feature table for ``papers`` relative to the profile.
 
     ``self_index[i]`` = position of paper i inside the profile (or -1); that profile
@@ -90,7 +126,10 @@ def features(papers, V, profile: Profile, profile_v, q, today: date, self_index=
             if j >= 0:
                 mask[i, j] = False
     if groups is not None and profile_groups is not None and m:
-        mask &= np.asarray(groups, dtype=object)[:, None] != np.asarray(profile_groups, dtype=object)[None, :]
+        mask &= (
+            np.asarray(groups, dtype=object)[:, None]
+            != np.asarray(profile_groups, dtype=object)[None, :]
+        )
     like_authors = [set(p["authors"]) for p in profile.labeled]
     out = np.zeros((n, len(FEATURES)), dtype=np.float32)
     for i, p in enumerate(papers):
@@ -105,10 +144,15 @@ def features(papers, V, profile: Profile, profile_v, q, today: date, self_index=
         out[i, 3] = sn.mean() if len(sn) else 0
         out[i, 4] = sn.max() if len(sn) else 0
         out[i, 5] = float(V[i] @ q) if q is not None else 0
-        roc = (q if q is not None else 0) + (profile_v[pos].mean(0) if pos.any() else 0) \
+        roc = (
+            (q if q is not None else 0)
+            + (profile_v[pos].mean(0) if pos.any() else 0)
             - (0.25 * profile_v[neg].mean(0) if neg.any() else 0)
+        )
         roc = np.asarray(roc, dtype=float)
-        out[i, 6] = float(V[i] @ roc / np.linalg.norm(roc)) if roc.ndim and np.linalg.norm(roc) > 0 else 0
+        out[i, 6] = (
+            float(V[i] @ roc / np.linalg.norm(roc)) if roc.ndim and np.linalg.norm(roc) > 0 else 0
+        )
         out[i, 7] = sum(len(authors & like_authors[j]) for j in np.flatnonzero(pos))
         out[i, 8] = sum(len(authors & like_authors[j]) for j in np.flatnonzero(neg))
         liked = [profile.labeled[j] for j in np.flatnonzero(pos)]
@@ -148,45 +192,69 @@ def session_groups(profile: Profile, rated: list[date], folds: int = 5) -> list:
 
 @dataclass
 class Ranking:
-    scores: np.ndarray          # higher = better, for every pool paper
-    match: np.ndarray           # model "match" in [0, 1] (nan where not modeled)
-    engine: str                 # which model produced the shortlist order
-    shortlist: np.ndarray       # pool indices that the model scored
+    scores: np.ndarray  # higher = better, for every pool paper
+    match: np.ndarray  # model "match" in [0, 1] (nan where not modeled)
+    engine: str  # which model produced the shortlist order
+    shortlist: np.ndarray  # pool indices that the model scored
     table: np.ndarray | None = None
 
 
 class FeedRanker:
-    # Thresholds chosen from the cold-start curve (docs/research/figures/fig_coldstart.png):
+    # Thresholds chosen from docs/research/figures/coldstart_table.md:
     # TabPFN's P(like) beats "your own like rate" from ~30 ratings on dev and test;
-    # its ranking only ties similarity ranking from ~50 ratings.
-    def __init__(self, engine: str = "tabpfn-fast", device: str = "auto", seed: int = 0,
-                 shortlist: int = 600, presumed_negatives: int = 0,
-                 match_after: int = 30, min_each: int = 3):
+    # ranking superiority is not established. Ordering follows the displayed probabilities.
+    def __init__(
+        self,
+        engine: str = "tabpfn-fast",
+        device: str = "auto",
+        seed: int = 0,
+        shortlist: int = 300,
+        match_after: int = 30,
+        min_each: int = 3,
+    ):
         self.engine, self.device, self.seed = engine, device, seed
-        self.shortlist_size, self.presumed = shortlist, presumed_negatives
+        if engine not in {"tabpfn-fast", "similarity"}:
+            raise ValueError("The product supports tabpfn-fast or similarity.")
+        self.shortlist_size = shortlist
         self.match_after, self.min_each = match_after, min_each
         self._model = None
 
     def ready(self, profile: Profile) -> int:
         """Ratings still needed before TabPFN scores and orders the feed (0 = active)."""
         n = len(profile.labeled)
-        short = max(0, self.min_each - len(profile.likes)) + max(0, self.min_each - len(profile.dislikes))
+        short = max(0, self.min_each - len(profile.likes)) + max(
+            0, self.min_each - len(profile.dislikes)
+        )
         return max(self.match_after - n, short, 0)
 
     def _tabpfn(self):
         if self._model is None:
             from tabpfn import TabPFNClassifier
             from tabpfn.constants import ModelVersion
-            version = ModelVersion.V3_5_FAST if self.engine == "tabpfn-fast" else ModelVersion.V3_5
+
             self._model = TabPFNClassifier.create_default_for_version(
-                version, device=self.device, random_state=self.seed)
+                ModelVersion.V3_5_FAST, device=self.device, random_state=self.seed
+            )
         return self._model
 
-    def rank(self, pool, V, profile: Profile, profile_v, q=None, today: date | None = None,
-             exclude: set[str] = frozenset(), learning: bool = False) -> Ranking:
+    def rank(
+        self,
+        pool,
+        V,
+        profile: Profile,
+        profile_v,
+        q=None,
+        today: date | None = None,
+        exclude: set[str] = frozenset(),
+        learning: bool = False,
+    ) -> Ranking:
         today = today or date.today()
         y = profile.labels
-        stage1 = similarity_scores(V, profile_v, y, q) if (len(y) or q is not None) else np.zeros(len(pool))
+        stage1 = (
+            similarity_scores(V, profile_v, y, q)
+            if (len(y) or q is not None)
+            else np.zeros(len(pool))
+        )
         available = np.array([p["id"] not in exclude for p in pool])
         stage1 = np.where(available, stage1, -np.inf)
         order = np.argsort(-stage1, kind="stable")
@@ -194,41 +262,37 @@ class FeedRanker:
         if self.engine == "similarity" or (not pilot_ready if learning else self.ready(profile)):
             return Ranking(stage1, np.full(len(pool), np.nan), "similarity", order[:0])
         short = order[: min(self.shortlist_size, int(available.sum()))]
-        # Context: the user's labels (leave-one-out features) + presumed negatives.
-        rated = [date.fromisoformat(p["rated_at"]) if p.get("rated_at") else today
-                 for p in profile.labeled]
-        X_lab = features(profile.labeled, profile_v, profile, profile_v, q, today,
-                         self_index=np.arange(len(y)), as_of=rated,
-                         groups=(g := session_groups(profile, rated)), profile_groups=g)
-        rng = np.random.default_rng(self.seed + len(y))
-        unread = np.flatnonzero(available)
-        count = min(self.presumed, len(unread))
-        presumed = rng.choice(unread, size=count, replace=False) if count else np.array([], int)
-        X_neg = features([pool[i] for i in presumed], V[presumed], profile, profile_v, q, today)
+        # Context: explicit user ratings with cross-fitted history features.
+        rated = [
+            date.fromisoformat(p["rated_at"]) if p.get("rated_at") else today
+            for p in profile.labeled
+        ]
+        X_lab = features(
+            profile.labeled,
+            profile_v,
+            profile,
+            profile_v,
+            q,
+            today,
+            self_index=np.arange(len(y)),
+            as_of=rated,
+            groups=(g := session_groups(profile, rated)),
+            profile_groups=g,
+        )
         X_short = features([pool[i] for i in short], V[short], profile, profile_v, q, today)
         # "embsig" input: raw embedding + compact relational signals.
         sig = [FEATURES.index(f) for f in PRODUCT_SIGNALS]
         X_lab = np.hstack([profile_v, X_lab[:, sig]])
-        X_neg = np.hstack([V[presumed], X_neg[:, sig]]) if count else np.zeros((0, X_lab.shape[1]))
         X_short = np.hstack([V[short], X_short[:, sig]])
-        X_ctx = np.vstack([X_lab, X_neg])
-        y_ctx = np.concatenate([y, np.zeros(count, dtype=int)])
-        if self.engine == "logistic":
-            from sklearn.linear_model import LogisticRegression
-            from sklearn.preprocessing import StandardScaler
-            scaler = StandardScaler().fit(np.nan_to_num(X_ctx))
-            model = LogisticRegression(max_iter=2000).fit(scaler.transform(np.nan_to_num(X_ctx)), y_ctx)
-            proba = model.predict_proba(scaler.transform(np.nan_to_num(X_short)))[:, 1]
-        else:
-            model = self._tabpfn()
-            model.fit(X_ctx, y_ctx)
-            proba = model.predict_proba(X_short)[:, list(model.classes_).index(1)]
+        model = self._tabpfn()
+        model.fit(X_lab, y)
+        proba = model.predict_proba(X_short)[:, list(model.classes_).index(1)]
         match = np.full(len(pool), np.nan)
         match[short] = proba
         scores = np.full(len(pool), -np.inf)
         # Shortlist ordered by model; everything else stays below in stage-1 order.
         scores[short] = 10.0 + proba
-        rest = order[len(short):]
+        rest = order[len(short) :]
         scores[rest] = np.where(np.isfinite(stage1[rest]), stage1[rest], -np.inf)
         return Ranking(scores, match, self.engine, short, X_short)
 
@@ -244,7 +308,9 @@ def explain(paper: dict, v: np.ndarray, profile: Profile, profile_v: np.ndarray)
     shared = sorted({a for l in profile.likes for a in set(l["authors"]) & set(paper["authors"])})
     if shared:
         reasons["shared_authors"] = shared[:3]
-    cats = sorted({c for l in profile.likes for c in set(l["categories"]) & set(paper["categories"])})
+    cats = sorted(
+        {c for l in profile.likes for c in set(l["categories"]) & set(paper["categories"])}
+    )
     if cats:
         reasons["shared_categories"] = cats[:3]
     return reasons

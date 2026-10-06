@@ -21,9 +21,11 @@ https://github.com/user-attachments/assets/304a96bf-a225-428b-860d-fc199f8b562d
 
 ## Why TabPFN-3.5 Fast?
 
-Each reader supplies a small, changing table: one row per rated paper, embedding and preference features as columns, and **Interested / Not for me** as the label. TabPFN uses those labeled rows as context to predict `P(Interested)` for unread papers. New feedback changes that context; Lens does not train a separate neural network for every reader. The implementation explicitly selects **`ModelVersion.V3_5_FAST`**, the smaller, faster 3.5 variant, to support repeated shortlist and citation scoring. [Model selection in Lens](lens/src/lens/feed/rank.py) · [Prior Labs’ 3.5 model guide](https://github.com/PriorLabs/TabPFN).
+Each reader supplies a small, changing table: one row per rated paper, embedding and preference features as columns, and **Interested / Not for me** as the label. TabPFN uses those labeled rows as context to predict `P(Interested)` for unread papers. New feedback changes that context; Lens does not train a separate neural network for every reader. Lens combines E5’s 384 embedding dimensions with 10 preference signals—a 394-column table. The implementation explicitly selects **`ModelVersion.V3_5_FAST`**, the smaller, faster 3.5 variant, to support repeated shortlist and citation scoring. [Model selection in Lens](lens/src/lens/feed/rank.py) · [Prior Labs’ 3.5 model guide](https://github.com/PriorLabs/TabPFN).
 
 **Probability quality is the reason to use it here.** In our frozen test, TabPFN-3.5 Fast achieved **0.191 Brier / 0.158 calibration error**, improving both against every pre-registered probabilistic baseline. Those probabilities support “only notify me above 80%,” uncertainty-guided rating suggestions, and an estimate of relevant references still unread. The live reality check lets a reader inspect how forecasts compare with their own feedback. [Evidence and limits](#evidence).
+
+Fast retains nearly the full 3.5 model’s probability quality in our test: Brier 0.191 versus 0.190, and ECE 0.158 versus 0.154. We chose its smaller, faster variant for interactive use; this evaluation does not measure browser latency.
 
 Rocchio remains a useful similarity baseline and has higher ranking AUC in this evaluation. Lens’s contribution is turning TabPFN-3.5 probabilities into decisions throughout the reading workflow, with an explicit check on whether those probabilities earn the reader’s trust.
 
@@ -34,7 +36,7 @@ Install **[uv](https://docs.astral.sh/uv/getting-started/installation/)** and **
 ```sh
 git clone https://github.com/James-Begin/LensPFN.git
 cd LensPFN/lens
-uv sync --locked --extra semantic --extra tabpfn --extra feed
+uv sync --locked --extra semantic --extra tabpfn
 uv run --no-sync python -m lens.feed.bridge --device cpu
 ```
 
@@ -154,7 +156,5 @@ Lens currently requires a running local companion and an unpacked Chrome/Chromiu
 | [Python companion and ranker](lens/src/lens/feed/) | Authenticated bridge, persistence, embeddings, ranking, reference resolution |
 | [Research and benchmark documentation](docs/research/README.md) | Methodology, frozen plan, results, figures, and reproduction |
 | [Contributing](CONTRIBUTING.md) | Tests, CI, and extension packaging |
-
-The optional Streamlit feed remains available with `uv run --no-sync streamlit run src/lens/feed/app.py` from `lens/`.
 
 Built for the TabPFN-3.5 hackathon. Lens is an independent project and is not endorsed by arXiv or Prior Labs. Third-party models, metadata, evaluation data, and paper illustrations retain their own terms; see [notices and licensing](NOTICE.md).

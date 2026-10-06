@@ -1,4 +1,5 @@
 """Local, private persistence for Lens Feed (profile + harvested pools). Nothing leaves disk."""
+
 from __future__ import annotations
 
 from datetime import date, datetime, timezone
@@ -18,12 +19,19 @@ class Store:
         if not self.profile_path.exists():
             return Profile()
         d = json.loads(self.profile_path.read_text())
-        return Profile(likes=d.get("likes", []), dislikes=d.get("dislikes", []),
-                       interests=d.get("interests", ""))
+        return Profile(
+            likes=d.get("likes", []),
+            dislikes=d.get("dislikes", []),
+            interests=d.get("interests", ""),
+        )
 
     def save_profile(self, profile: Profile, hidden: set[str] | None = None):
-        d = {"likes": profile.likes, "dislikes": profile.dislikes, "interests": profile.interests,
-             "hidden": sorted(hidden or self.hidden())}
+        d = {
+            "likes": profile.likes,
+            "dislikes": profile.dislikes,
+            "interests": profile.interests,
+            "hidden": sorted(hidden or self.hidden()),
+        }
         tmp = self.profile_path.with_suffix(".tmp")
         tmp.write_text(json.dumps(d, indent=1))
         tmp.replace(self.profile_path)
@@ -48,13 +56,18 @@ def rate(profile: Profile, paper: dict, liked: bool, today: date | None = None) 
     pid = paper["id"]
     likes = [p for p in profile.likes if p["id"] != pid]
     dislikes = [p for p in profile.dislikes if p["id"] != pid]
-    entry = {**paper, "rated_at": (today or date.today()).isoformat(),
-             "rated_at_time": datetime.now(timezone.utc).isoformat()}
+    entry = {
+        **paper,
+        "rated_at": (today or date.today()).isoformat(),
+        "rated_at_time": datetime.now(timezone.utc).isoformat(),
+    }
     (likes if liked else dislikes).append(entry)
     return Profile(likes=likes, dislikes=dislikes, interests=profile.interests)
 
 
 def unrate(profile: Profile, pid: str) -> Profile:
-    return Profile(likes=[p for p in profile.likes if p["id"] != pid],
-                   dislikes=[p for p in profile.dislikes if p["id"] != pid],
-                   interests=profile.interests)
+    return Profile(
+        likes=[p for p in profile.likes if p["id"] != pid],
+        dislikes=[p for p in profile.dislikes if p["id"] != pid],
+        interests=profile.interests,
+    )

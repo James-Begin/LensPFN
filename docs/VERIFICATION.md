@@ -1,32 +1,33 @@
-# Packaging verification
+# Submission verification
 
-Checked locally on 2026-10-05. These are local results. GitHub Actions repeats the automated
-checks on each push; its current status is linked from the main README.
+Final local checks on 2026-10-06. GitHub Actions repeats the automated checks; the
+README badge links to current CI status.
 
 | Check | Result |
 | --- | --- |
-| Python unit tests | 46 pass in a fresh Python 3.12 environment with only locked core dependencies. |
-| JavaScript tests | 37 pass, including invocation from the repo root used by CI. |
-| Extension syntax | Every production `.js` file passes `node --check`. |
-| Python dependency lock | `uv lock --check` passes; full application sync dry-run requires no lock changes. |
-| Seeded demo | 29 positive + 15 negative curated ratings; 300 distinct unrated cs.LG/stat.ML candidates; companion loads it as ready. Removing a citation’s own label still leaves enough context. |
-| Profile preservation | The helper refuses an existing root. Demo checks use temporary directories and leave the normal profile untouched. |
-| Extension packaging | 21 current source/assets files; manifest targets present; second rebuild produces identical ZIP bytes. |
-| Documentation | Relative file links and Markdown heading links pass `scripts/check_submission.py`. |
-| Public-file hygiene | No local profile/cache/environment paths or recognized provider/GitHub/private-key credential patterns found in the public source; This is a targeted check, not a complete security audit. |
-| Updated video | 113.12-second cut-09 uploaded as a GitHub attachment; H.264/AAC, 1920×1080, 60 fps, and 6,787 decoded frames verified locally. Checksum and provenance are in the demo guide; temporary reports and MP4 stay outside the Git source tree. |
-| Submission cleanup | Obsolete TREC-COVID code/CLI/dependency, planning notes, duplicate ZIP, and unused poster removed. Research consolidated under `docs/research/`; current app and benchmark imports verified. |
-| Probability features | Prospective history excludes already-rated papers and freezes the first forecast; strict digest threshold, notification acknowledgment/retries, offline alarm restoration, early uncertainty pilot, and unrated bibliography expectation pass targeted tests. |
-| Live feature walkthrough | Real local TabPFN Fast on MPS, isolated public-demo profiles: reliability 1/2 then 2/3; Sharpen queue at 6, 7, and 8 ratings without match percentages; cold-profile digest gating; reference expectation 2.1 → 1.1 on save. Production citation modules tested through the handwritten local fixture. |
-| Browser flow and layout | In-app browser desktop and 390px captures inspected; rating/loading/settled frames, abstract expansion, keyboard citation preview, empty digest, and view switching checked. Existing bounded stagger and reduced-motion tests pass. No settled list overlap or horizontal overflow observed. |
-| Native Chrome alerts | Worker policy verified with mocked Chrome APIs. Chrome was not connected to automation, so new OS banners, notification clicks, and live arXiv integration were not verified in this pass. |
-| Personal profile | Companion restarted on port 8765; personal profile checksum unchanged and 34 ratings retained. Digest stays opt-in. |
-| Patch whitespace | `git diff --check` passes. |
+| Repository audit | Every public file reviewed for runtime, tests, setup, licensing, demo or evaluation purpose. Legacy Streamlit UI/dependencies, old release notes, outdated chart exports and the unused full-week metadata pool removed. |
+| Python | 51 tests pass; pinned Ruff formatting and unused-code checks pass. Core tests use no model weights, token, network or personal profile. |
+| Extension | 37 JavaScript tests pass; all production scripts pass syntax checks. Formatted source retains the no-build Manifest V3 workflow. |
+| Fresh checkout | Archived public source installed in a new Python 3.12 environment; 51 tests, CLI diagnostics, demo preparation/refusal, formatting and ZIP checks pass without a token or downloaded weights. |
+| Locked setup | Core and full semantic/TabPFN environments resolve from `uv.lock`; Python package and extension both report 0.8.0. |
+| Demo | Separate profile: 29 Interested, 15 Not for me, 300 distinct unrated candidates. Metadata pool reduced from 5.1 MB to 184 KB. Existing destinations are refused. |
+| Regression fixes | Saving a DOI-resolved paper reuses verified metadata. Digest restores scores after viewing an empty subject. Setup fixture supports current session storage. |
+| Package and links | Deterministic ZIP contains every current extension asset exactly once; local links/anchors and recognized credential patterns checked by the submission script. |
+| Benchmark reproduction | Dataset/model revisions can be pinned; manifests record input checksum, users, seed and package versions. Sharding validates `0 ≤ k < n`; full and Fast models have separate caches. Synthetic prepare/replay/report/figure smoke passes, including real Fast/full inference and LightGBM in separate processes. Frozen measurements remain unchanged. |
+| Video | Published GitHub attachment: 113.12 s, 1080p/60 fps, H.264/AAC. Full decoded-frame audit found longest hold 2.42 s. [Provenance and checksum](DEMO.md#showcase-provenance). |
 
-No new full benchmark was run during documentation/packaging. Reported measurements are
-linked to the existing frozen evaluation and exploratory analyses. Earlier UI validation is documented in the [0.7.0 release notes](research/releases/0.7.0.md).
-The [0.8.0 probability features](research/releases/0.8.0.md) add the browser and automated
-checks above; this pass does not claim new live arXiv coverage or a cold-start benchmark.
+Final browser smoke used real local 3.5 Fast on MPS: guided setup retained 44 ratings;
+feedback advanced to 46, the prospective check reported 1/1, Sharpen returned six
+unrated suggestions with no displayed percentages, and five fixture references scored
+with one unavailable. DOI-only BERT resolved to its own identity. The normal profile
+was not used. Saving a recommended citation reduced expected remaining relevant
+references from 1.1 to 0.1 without changing the other papers’ identities.
 
-[Reproduce the development checks](../CONTRIBUTING.md) ·
-[Demo setup](DEMO.md) · [Video validation](DEMO.md#export-checks).
+The [probability feature validation](research/releases/0.8.0.md) documents earlier real
+TabPFN-3.5 Fast checks on Apple Silicon, desktop/narrow browser flows, and remaining-reference
+updates. Chrome notification policy is tested with mocked APIs; native OS banners and
+all live arXiv variants have not been exhaustively verified. No new full Scholar Inbox
+evaluation was run during cleanup; the [research guide](research/README.md) explains the
+limits of exact historical reproduction.
+
+[Run these checks](../CONTRIBUTING.md) · [Try the demo](DEMO.md)

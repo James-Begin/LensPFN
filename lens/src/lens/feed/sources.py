@@ -4,6 +4,7 @@ arXiv API terms (https://info.arxiv.org/help/api/tou.html): metadata is CC0; at 
 request every three seconds over a single connection; link users to abstract pages
 and do not host PDFs. Raw responses are cached on disk so re-runs do not re-request.
 """
+
 from __future__ import annotations
 
 from datetime import date, timedelta
@@ -19,7 +20,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 OAI = "https://oaipmh.arxiv.org/oai"
-USER_AGENT = "lens-feed/0.1 (TabPFN hackathon prototype; personal research use)"
+USER_AGENT = "LensPFN/0.8.0 (https://github.com/James-Begin/LensPFN)"
 MIN_INTERVAL = 3.5  # seconds between requests (arXiv asks for >= 3)
 NS = {"oai": "http://www.openarchives.org/OAI/2.0/", "ax": "http://arxiv.org/OAI/arXiv/"}
 TOP_LEVEL_SETS = {"cs", "math", "stat", "eess", "econ", "q-bio", "q-fin", "physics"}
@@ -66,7 +67,8 @@ def _abstract_record(arxiv_id: str, cache: Path) -> dict:
             time.sleep(wait)
         _last_request = time.monotonic()
         request = urllib.request.Request(
-            f"https://arxiv.org/abs/{arxiv_id}", headers={"User-Agent": USER_AGENT})
+            f"https://arxiv.org/abs/{arxiv_id}", headers={"User-Agent": USER_AGENT}
+        )
         with urllib.request.urlopen(request, timeout=120) as response:
             html = response.read().decode("utf-8")
         cache.mkdir(parents=True, exist_ok=True)
@@ -78,8 +80,9 @@ def _abstract_record(arxiv_id: str, cache: Path) -> dict:
     found = get("citation_arxiv_id")
     if found != arxiv_id or not get("citation_title") or not get("citation_abstract"):
         raise ValueError(f"arXiv paper {arxiv_id!r} has incomplete metadata")
-    categories = list(dict.fromkeys(re.findall(r"\(([a-z-]+(?:\.[A-Z]{2})?)\)",
-                                             " ".join(parser.subjects))))
+    categories = list(
+        dict.fromkeys(re.findall(r"\(([a-z-]+(?:\.[A-Z]{2})?)\)", " ".join(parser.subjects)))
+    )
     created = get("citation_date").replace("/", "-")
     updated = get("citation_online_date").replace("/", "-")
     return {
@@ -118,7 +121,11 @@ def _get(params: dict, cache: Path, *, retries: int = 4) -> str:
         except urllib.error.HTTPError as exc:
             if exc.code in (429, 503) and attempt < retries - 1:
                 retry_after = exc.headers.get("Retry-After")
-                time.sleep(int(retry_after) if retry_after and retry_after.isdigit() else 30 * (attempt + 1))
+                time.sleep(
+                    int(retry_after)
+                    if retry_after and retry_after.isdigit()
+                    else 30 * (attempt + 1)
+                )
                 continue
             raise
     cache.mkdir(parents=True, exist_ok=True)
@@ -136,8 +143,14 @@ def _parse(record: ET.Element) -> dict | None:
         return None
     authors = []
     for a in meta.findall("ax:authors/ax:author", NS):
-        name = " ".join(x for x in (_clean(a.findtext("ax:forenames", None, NS)),
-                                    _clean(a.findtext("ax:keyname", None, NS))) if x)
+        name = " ".join(
+            x
+            for x in (
+                _clean(a.findtext("ax:forenames", None, NS)),
+                _clean(a.findtext("ax:keyname", None, NS)),
+            )
+            if x
+        )
         if name:
             authors.append(name)
     arxiv_id = _clean(meta.findtext("ax:id", None, NS))
@@ -157,8 +170,9 @@ def _parse(record: ET.Element) -> dict | None:
     }
 
 
-def harvest(top_set: str, start: date, end: date, cache: Path, *, new_only: bool = True,
-            progress=None) -> list[dict]:
+def harvest(
+    top_set: str, start: date, end: date, cache: Path, *, new_only: bool = True, progress=None
+) -> list[dict]:
     """All records in an OAI set with datestamp in [start, end].
 
     ``new_only`` keeps papers first submitted (``created``) at most ``NEW_GRACE_DAYS``
@@ -167,8 +181,13 @@ def harvest(top_set: str, start: date, end: date, cache: Path, *, new_only: bool
     """
     if top_set not in TOP_LEVEL_SETS:
         raise ValueError(f"Unknown arXiv set {top_set!r}; choose from {sorted(TOP_LEVEL_SETS)}")
-    params = {"verb": "ListRecords", "metadataPrefix": "arXiv", "set": top_set,
-              "from": start.isoformat(), "until": end.isoformat()}
+    params = {
+        "verb": "ListRecords",
+        "metadataPrefix": "arXiv",
+        "set": top_set,
+        "from": start.isoformat(),
+        "until": end.isoformat(),
+    }
     earliest = (start - timedelta(days=NEW_GRACE_DAYS)).isoformat()
     papers, page = [], 0
     while True:
@@ -199,8 +218,14 @@ def fetch_paper(arxiv_id: str, cache: Path) -> dict:
     arxiv_id = re.sub(r"^(https?://arxiv\.org/(abs|pdf)/|arxiv:)", "", arxiv_id.strip(), flags=re.I)
     arxiv_id = re.sub(r"v\d+$", "", arxiv_id.removesuffix(".pdf"))
     try:
-        text = _get({"verb": "GetRecord", "metadataPrefix": "arXiv",
-                     "identifier": f"oai:arXiv.org:{arxiv_id}"}, cache)
+        text = _get(
+            {
+                "verb": "GetRecord",
+                "metadataPrefix": "arXiv",
+                "identifier": f"oai:arXiv.org:{arxiv_id}",
+            },
+            cache,
+        )
     except urllib.error.HTTPError as exc:
         if exc.code in (400, 403, 404, 406):
             return _abstract_record(arxiv_id, cache)
@@ -216,23 +241,23 @@ def fetch_paper(arxiv_id: str, cache: Path) -> dict:
 def cached_papers(cache: Path) -> dict[str, dict]:
     """Index previously fetched metadata without making any network requests."""
     papers = {}
-    for path in cache.glob('abs-*.html'):
-        pid = path.stem.removeprefix('abs-')
-        if not re.fullmatch(r'\d{4}\.\d{4,5}',pid):
+    for path in cache.glob("abs-*.html"):
+        pid = path.stem.removeprefix("abs-")
+        if not re.fullmatch(r"\d{4}\.\d{4,5}", pid):
             continue
         try:
-            paper = _abstract_record(pid,cache)
-            papers[paper['id']] = paper
-        except (OSError,ValueError):
+            paper = _abstract_record(pid, cache)
+            papers[paper["id"]] = paper
+        except (OSError, ValueError):
             continue
-    for path in cache.glob('*.xml'):
+    for path in cache.glob("*.xml"):
         try:
             root = ET.fromstring(path.read_text())
-            for record in root.iter('{'+NS['oai']+'}record'):
+            for record in root.iter("{" + NS["oai"] + "}record"):
                 paper = _parse(record)
                 if paper:
-                    papers[paper['id']] = paper
-        except (OSError,ET.ParseError):
+                    papers[paper["id"]] = paper
+        except (OSError, ET.ParseError):
             continue
     return papers
 

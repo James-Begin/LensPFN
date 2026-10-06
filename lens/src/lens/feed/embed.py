@@ -1,4 +1,5 @@
 """Incremental on-disk embedding cache (e5-small-v2, unit-normalized)."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -24,6 +25,7 @@ class Embedder:
     def model(self):
         if self._model is None:
             from sentence_transformers import SentenceTransformer
+
             self._model = SentenceTransformer(MODEL, device=self.device)
         return self._model
 
@@ -33,8 +35,14 @@ class Embedder:
             texts = [f"passage: {p['title']}. {p['abstract']}" for p in missing]
             new = []
             for i in range(0, len(texts), 256):
-                new.append(self.model.encode(texts[i:i + 256], batch_size=64,
-                                             normalize_embeddings=True, show_progress_bar=False))
+                new.append(
+                    self.model.encode(
+                        texts[i : i + 256],
+                        batch_size=64,
+                        normalize_embeddings=True,
+                        show_progress_bar=False,
+                    )
+                )
                 if progress:
                     progress(min(i + 256, len(texts)), len(texts))
             start = len(self.vectors)

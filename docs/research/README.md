@@ -23,10 +23,7 @@ three of each label. Citation scoring excludes the cited paper's own rating. The
 exploratory no-age variant retained Brier 0.191 on the same test users.
 
 Scholar Inbox's own ranker selected the exposed papers: results measure reranking
-among rated papers, rather than discovery over all arXiv. The earlier TREC-COVID
-screening prototype informed the shift toward probability quality; that prototype
-and planning notes are preserved in Git history.
-
+among rated papers, rather than discovery over all arXiv. 
 ## Read the evidence
 
 | Document | What it establishes |
@@ -42,36 +39,23 @@ corrected exploratory `rocplatt:g0.5` baseline has Brier **0.203**, per-user ECE
 **0.177**, and AUC **0.724**. It differs from the frozen `roc:logistic` baseline
 (Brier 0.217, per-user ECE 0.179).
 
-<details>
-<summary><b>Original diagnostic figures and their interpretation</b></summary>
+## Diagnostic evidence
 
-![Original held-out reliability diagram](figures/fig_reliability.png)
-
-A curve closer to the diagonal is better calibrated. This original export's gray
-“Platt-calibrated Rocchio” legend refers to **`roc:logistic`**, the original
-Rocchio-feature logistic baseline, not corrected `rocplatt:g0.5`. The generator now
-names it explicitly. Its pooled ECE of 0.048 uses a different aggregation from the
-pre-registered mean per-user ECE; do not compare it directly with the main table.
-The original export is preserved because private predictions are not distributed here.
-
-![Original threshold and coverage diagnostics](figures/fig_gate.png)
-
-The same gray-baseline clarification applies. “Notification gate” is an experimental
-threshold analysis; the extension has no background notification service.
-
-![Exploratory cold-start curve](figures/fig_coldstart.png)
-
-The figure's 50-rating ranking annotation reflects an earlier product policy. The
-current product orders the shortlist by its displayed TabPFN estimate from 30 ratings.
-Rocchio ranked better in some cold-start regimes; the product favors a consistent
-visible score. See the [underlying table](figures/coldstart_table.md).
-
-</details>
+The cold-start and matched-coverage tables retain the aggregate evidence used to choose
+product thresholds. Superseded plot exports have been removed; the reporting scripts
+can generate fresh diagnostics from a new replay. Reliability plots use pooled bins,
+whereas the primary table averages calibration error per user. `roc:logistic` is the
+original Rocchio-feature logistic baseline, distinct from exploratory `rocplatt:g0.5`.
 
 ## Reproduce the benchmark
 
 Run from `LensPFN/lens/`. Full replay needs model access, network downloads, and
-substantial compute; unit tests require neither. The metadata download is about 3 GB.
+substantial compute; unit tests require neither. The metadata download is about 3 GB. On macOS, the LightGBM baseline also
+needs OpenMP: `brew install libomp` ([upstream installation guide](https://github.com/lightgbm-org/LightGBM/blob/main/python-package/README.rst)).
+This dependency is for benchmark baselines, not the Lens companion. If PyTorch and
+LightGBM load conflicting OpenMP runtimes on macOS, run their learner specifications
+in separate processes with separate output subdirectories; the reporting scripts
+combine those subdirectories. See the [LightGBM FAQ](https://lightgbm.readthedocs.io/en/latest/FAQ.html#lightgbm-crashes-randomly-or-operating-system-hangs-during-or-after-running-lightgbm).
 
 ```sh
 uv sync --locked --extra semantic --extra tabpfn --extra bench
@@ -99,3 +83,11 @@ It reads reported aggregate metrics; it does not reconstruct private predictions
 invent reliability curves. Use a new output directory when replaying, leaving frozen
 evidence intact. Scholar Inbox ratings and derived predictions are evaluation-only
 and excluded from Git; see [notices](../../NOTICE.md).
+
+For a repeatable new run, use the same ratings checkout, pass `--metadata-revision`
+and `--encoder-revision` commit hashes to `bench-prepare`, and retain its manifest.
+The manifest records the input CSV SHA-256, selected users, resolved metadata/model
+revisions, seed, and dependency versions; replay configs record runtime and device.
+The historical aggregate tables are retained, but the original private predictions
+and every original upstream revision are not bundled. Replaying changing upstream
+data is therefore not a promise to reproduce the published decimals exactly.
